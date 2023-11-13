@@ -15,24 +15,27 @@ resource "aws_s3_bucket" "s3_app" {
   }
 }
 
-# S3 버킷에 대한 정책 설정
-resource "aws_s3_bucket_policy" "s3_app_policy" {
-  bucket = aws_s3_bucket.s3_app.bucket
-
-  policy = file("policy_file/s3_policy.json")
-}
-resource "aws_s3_bucket_ownership_controls" "s3_app_owners" {
+resource "aws_s3_bucket_ownership_controls" "s3_app_owner" {
   bucket = aws_s3_bucket.s3_app.id
-
   rule {
     object_ownership = "BucketOwnerPreferred"
   }
 }
 
+resource "aws_s3_bucket_public_access_block" "s3_app_access_block" {
+  bucket = aws_s3_bucket.s3_app.id
 
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+}
 
 resource "aws_s3_bucket_acl" "s3_app_acl" {
-  depends_on = [aws_s3_bucket_ownership_controls.s3_app_owners]
+  depends_on = [
+    aws_s3_bucket_ownership_controls.s3_app_owner,
+    aws_s3_bucket_public_access_block.s3_app_access_block,
+  ]
 
   bucket = aws_s3_bucket.s3_app.id
   acl    = "public-read"
