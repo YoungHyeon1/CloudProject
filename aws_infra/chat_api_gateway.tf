@@ -23,7 +23,7 @@ resource "aws_api_gateway_resource" "chat_resource" {
 resource "aws_api_gateway_method" "chat_post_method" {
   rest_api_id   = aws_api_gateway_rest_api.chat_api.id
   resource_id   = aws_api_gateway_resource.chat_resource.id
-  http_method   = "POST"
+  http_method   = "GET"
   authorization = "NONE"
 }
 
@@ -53,7 +53,7 @@ resource "aws_lambda_function" "chat_handler" {
   filename      = "lambda_file/chat_handler.zip"
   function_name = "ChatHandler"
   role          = aws_iam_role.role.arn
-  handler       = "lambda.lambda_handler"
+  handler       = "chat_handler.chat_handler"
   runtime       = "python3.7"
 
   source_code_hash = filebase64sha256("lambda_file/chat_handler.zip")
