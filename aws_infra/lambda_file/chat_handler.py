@@ -6,7 +6,7 @@ dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('ChatMessages')
 
 def chat_handler(event, context):
-
+    # event에서 메시지 데이터 추출
     try:
         query_str = event['queryStringParameters']
         message_id = query_str['MessageId']
@@ -17,7 +17,7 @@ def chat_handler(event, context):
         return{
             'statusCode': 500,
             'headers': {'Content-Type': 'application/json'},
-            'body': json.dumps({'message': '잘못된 입력값 입니다.'})
+            'body': json.dumps({'message': '잘못된 입력값'})
         }
     return {
         'statusCode': 200,
