@@ -1,12 +1,12 @@
 # Variables
 variable "myregion" {
-    type        = string
-    description = "ap-northeast-2"
+  type        = string
+  description = "ap-northeast-2"
 }
 
 variable "accountId" {
-    type        = string
-    description = "652832981770"
+  type        = string
+  description = "652832981770"
 }
 
 resource "aws_api_gateway_rest_api" "chat_api" {
@@ -37,35 +37,26 @@ resource "aws_api_gateway_integration" "chat_lambda_integration" {
   uri                     = aws_lambda_function.chat_handler.invoke_arn
 }
 
-/////////////////////
-resource "aws_api_gateway_integration" "integration" {
-  rest_api_id             = aws_api_gateway_rest_api.api.id
-  resource_id             = aws_api_gateway_resource.resource.id
-  http_method             = aws_api_gateway_method.method.http_method
-  integration_http_method = "POST"
-  type                    = "AWS_PROXY"
-  uri                     = aws_lambda_function.lambda.invoke_arn
-}
 
 # Lambda
 resource "aws_lambda_permission" "apigw_lambda" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.lambda.function_name
+  function_name = aws_lambda_function.chat_handler.function_name
   principal     = "apigateway.amazonaws.com"
 
   # More: http://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-control-access-using-iam-policies-to-invoke-api.html
-  source_arn = "arn:aws:execute-api:${var.myregion}:${var.accountId}:${aws_api_gateway_rest_api.api.id}/*/${aws_api_gateway_method.method.http_method}${aws_api_gateway_resource.resource.path}"
+  source_arn = "arn:aws:execute-api:${var.myregion}:${var.accountId}:${aws_api_gateway_rest_api.chat_api.id}/*/${aws_api_gateway_method.chat_post_method.http_method}${aws_api_gateway_resource.chat_resource.path}"
 }
 
-resource "aws_lambda_function" "lambda" {
-  filename      = "lambda.zip"
-  function_name = "mylambda"
+resource "aws_lambda_function" "chat_handler" {
+  filename      = "lambda_file/chat_handler.zip"
+  function_name = "ChatHandler"
   role          = aws_iam_role.role.arn
   handler       = "lambda.lambda_handler"
   runtime       = "python3.7"
 
-  source_code_hash = filebase64sha256("lambda.zip")
+  source_code_hash = filebase64sha256("lambda_file/chat_handler.zip")
 }
 
 # IAM
@@ -83,6 +74,6 @@ data "aws_iam_policy_document" "assume_role" {
 }
 
 resource "aws_iam_role" "role" {
-  name               = "myrole"
+  name               = "ChatLambda"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
