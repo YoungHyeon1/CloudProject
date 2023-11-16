@@ -35,10 +35,23 @@ data "aws_iam_policy_document" "lambda_logging" {
       "logs:CreateLogGroup",
       "logs:CreateLogStream",
       "logs:PutLogEvents",
+      "dynamodb:PutItem",
+      "dynamodb:GetItem",
+      "dynamodb:UpdateItem",
+      "dynamodb:Query",
+      "dynamodb:Scan",
+      "dynamodb:DeleteItem",
+      "execute-api:ManageConnections"
     ]
 
-    resources = ["arn:aws:logs:*:*:*"]
+    resources = [
+      "arn:aws:logs:*:*:*",
+      aws_dynamodb_table.chat_messages.arn,
+      aws_dynamodb_table.user_connections.arn,
+      "arn:aws:execute-api:ap-northeast-2:652832981770:o0p8o0v62i/*/*/@connections/*"
+    ]
   }
+
 }
 
 
@@ -183,6 +196,8 @@ resource "aws_apigatewayv2_stage" "dev_stage" {
     data_trace_enabled       = true   // 데이터 추적 활성화
     logging_level            = "INFO" // 로그 레벨 설정
     detailed_metrics_enabled = true
+    throttling_burst_limit   = 10
+    throttling_rate_limit    = 10
   }
 
   access_log_settings {
@@ -209,4 +224,12 @@ resource "aws_apigatewayv2_authorizer" "socket_authorizer" {
   authorizer_uri   = aws_lambda_function.send_lambda.invoke_arn
   identity_sources = ["route.request.header.Auth"]
   name             = "example-authorizer"
+}
+
+
+# 반환값
+resource "aws_apigatewayv2_route_response" "default_response" {
+  api_id             = aws_apigatewayv2_api.chat.id
+  route_id           = aws_apigatewayv2_route.default.id
+  route_response_key = "$default"
 }
