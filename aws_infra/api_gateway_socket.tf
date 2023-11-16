@@ -128,8 +128,6 @@ resource "aws_apigatewayv2_route" "disconnect" {
 
 ###########################################################
 
-
-
 data "aws_iam_policy_document" "gateway_role" {
   statement {
     effect = "Allow"

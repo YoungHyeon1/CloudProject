@@ -44,7 +44,6 @@ def handle_disconnect(connection_id):
 def handle_message(connection_id, event):
 
 
-    message = {'Message': 'Hello, user!'}
     endpoint = f"https://{event['requestContext']['domainName']}/{event['requestContext']['stage']}"
 
     # DynamoDB에서 모든 연결 ID를 조회
@@ -54,12 +53,11 @@ def handle_message(connection_id, event):
     
     # 모든 연결된 사용자에게 메시지 전송
     for item in response['Items']:
-        send_message_to_connection(item['MessageId'], message, endpoint)
+        send_message_to_connection(item['MessageId'], json.loads(event["body"]), endpoint)
 
     table = dynamodb.Table('ChatMessages')
     timestamp = get_timestamp()
-    message_data = json.loads(event['body'])
+    message_data = json.loads(event["body"])
     message_data['MessageId'] = connection_id
     message_data['Timestamp'] = timestamp
     table.put_item(Item=message_data)
-    return {'statusCode': 200, 'body': json.dumps({'message': 'Message received'})}

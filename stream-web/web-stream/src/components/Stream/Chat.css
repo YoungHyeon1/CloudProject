@@ -1,11 +1,15 @@
 /* Chat.css */
 .chat-container {
+    position: relative;
     display: flex;
     flex-direction: column;
-    height: 100%; /* Use full height of parent */
+    height: 600px; /* Use full height of parent */
+    border: 1px solid #ccc; /* border for chat box */
+
   }
   
   .chat-messages {
+    position: relative;
     flex: 1;
     overflow-y: auto; /* Scrollable */
     padding: 10px;
@@ -24,6 +28,8 @@
   }
   
   .chat-input-form {
+    position : relative;
+    bottom : 0;
     display: flex;
     padding: 10px;
     border-top: 1px solid #ccc; /* separates input from messages */

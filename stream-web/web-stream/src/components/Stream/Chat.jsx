@@ -1,56 +1,42 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./Chat.css";
+import useWebSocket from "./useWebSocket";
 
 const Chat = () => {
-  const [messages, setMessages] = useState([
-    { id: 1, user: "User1", content: "Hello everyone!" },
-    { id: 2, user: "User2", content: "Hi there!" },
-    // ... more messages
-  ]);
+  const { messages, sendMessage } = useWebSocket(
+    "wss://o0p8o0v62i.execute-api.ap-northeast-2.amazonaws.com/dev/"
+  );
   const [input, setInput] = useState("");
 
-  const sendMessage = (event) => {
-    event.preventDefault();
+  const handleSendMessage = () => {
     if (input.trim()) {
-      const newMessage = {
-        id: messages.length + 1,
-        user: "You",
-        content: input,
-      };
-      setMessages([...messages, newMessage]);
-      setInput(""); // Clear input after sending
+      sendMessage({ Message: input });
+      setInput("");
     }
   };
-
-  useEffect(() => {
-    // Scroll to the latest message
-    const chatMessagesEl = document.querySelector(".chat-messages");
-    if (chatMessagesEl) {
-      chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
-    }
-  }, [messages]);
 
   return (
     <div className="chat-container">
       <div className="chat-messages">
-        {messages.map((message) => (
-          <div key={message.id} className="chat-message">
-            <strong>{message.user}</strong>: {message.content}
+        {messages.map((message, index) => (
+          <div key={index} className="chat-message">
+            <strong>{message.User}</strong>: {message.Data}
           </div>
         ))}
       </div>
-      <form className="chat-input-form" onSubmit={sendMessage}>
+      <div className="chat-input-form">
         <input
           type="text"
           className="chat-input"
           placeholder="Type a message..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
+          onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
         />
-        <button type="submit" className="chat-send-button">
+        <button onClick={handleSendMessage} className="chat-send-button">
           Send
         </button>
-      </form>
+      </div>
     </div>
   );
 };
