@@ -1,43 +1,75 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../AppProvider";
+
+import {
+  AuthenticationDetails,
+  CognitoUser,
+  CognitoUserPool,
+} from "amazon-cognito-identity-js";
+
 import "./Login.css";
 
 const Login = () => {
-  const [username, setUsername] = useState("");
+  const navigate = useNavigate();
+  const { auth_login } = useAuth();
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const poolData = {
+    UserPoolId: "ap-northeast-2_a8RRLuYd3",
+    ClientId: "5dqmd1k888feth0u56mgckajlh",
+  };
+  const userPool = new CognitoUserPool(poolData);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // 로그인 처리 로직 구현
-    console.log("Login submitted for user:", username);
+  const handleSubmit = () => {
+    const authenticationData = {
+      Username: email,
+      Password: password,
+    };
+
+    const authenticationDetails = new AuthenticationDetails(authenticationData);
+    const userData = {
+      Username: email,
+      Pool: userPool,
+    };
+
+    const cognitoUser = new CognitoUser(userData);
+
+    cognitoUser.authenticateUser(authenticationDetails, {
+      onSuccess: (session) => {
+        auth_login(session.getAccessToken().getJwtToken());
+        navigate("/");
+      },
+      onFailure: (err) => {
+        alert(err.message || JSON.stringify(err));
+      },
+    });
   };
 
   return (
-    <div className="login-container">
-      <form className="login-form" onSubmit={handleSubmit}>
-        <h2 className="login-title">Log In</h2>
-        <div className="input-group">
-          <label htmlFor="username">Username</label>
-          <input
-            id="username"
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </div>
-        <div className="input-group">
-          <label htmlFor="password">Password</label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <button type="submit" className="login-button">
-          Log In
-        </button>
-      </form>
-    </div>
+    <>
+      <div className="input-group">
+        <label htmlFor="username">Email</label>
+        <input
+          id="username"
+          type="text"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+      </div>
+      <div className="input-group">
+        <label htmlFor="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+      </div>
+      <button type="submit" className="login-button" onClick={handleSubmit}>
+        로그인
+      </button>
+    </>
   );
 };
 

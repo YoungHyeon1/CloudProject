@@ -40,3 +40,26 @@ resource "aws_s3_bucket_acl" "s3_app_acl" {
   bucket = aws_s3_bucket.s3_app.id
   acl    = "public-read"
 }
+
+
+resource "aws_s3_bucket_policy" "allow_access_s3" {
+  bucket = aws_s3_bucket.s3_app.id
+  policy = data.aws_iam_policy_document.allow_access_s3.json
+}
+
+data "aws_iam_policy_document" "allow_access_s3" {
+  statement {
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+
+    actions = [
+      "s3:GetObject",
+    ]
+
+    resources = [
+      "${aws_s3_bucket.s3_app.arn}/*",
+    ]
+  }
+}
