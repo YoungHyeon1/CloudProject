@@ -21,7 +21,17 @@ function App() {
               <div className="main-content">
                 <Routes>
                   <Route element={<Mypage />} path="/mypage" />
-                  <Route element={<Main />} path="/" />
+                  <Route
+                    element={
+                      <Main
+                        streams={[
+                          { id: "1", name: "test" },
+                          { id: "2", name: "test2" },
+                        ]}
+                      />
+                    }
+                    path="/"
+                  />
                   <Route element={<LiveStreamPage />} path="/channel/:id" />
                   <Route element={<LiveStreamPage />} path="/about" />
                   <Route path="/login" element={<Users />} />
