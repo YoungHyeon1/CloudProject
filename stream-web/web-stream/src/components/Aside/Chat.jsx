@@ -16,7 +16,7 @@ const Chat = () => {
   };
 
   return (
-    <div className="chat-container">
+    <div className="chat-container-aside">
       <div className="chat-messages">
         {messages.map((message, index) => (
           <div key={index} className="chat-message">
@@ -24,10 +24,10 @@ const Chat = () => {
           </div>
         ))}
       </div>
-      <div className="chat-input-form">
+      <div className="chat-input-form-aside">
         <input
           type="text"
-          className="chat-input"
+          className="chat-input-aside"
           placeholder="Type a message..."
           value={input}
           onChange={(e) => setInput(e.target.value)}

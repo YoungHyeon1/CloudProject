@@ -2,7 +2,7 @@
 .index-container {
     padding: 20px;
     background-color: #f7f7f8;
-    min-height: 100vh; /* Use full height */
+    height: 100%; /* Use full height */
   }
   
   .index-title {

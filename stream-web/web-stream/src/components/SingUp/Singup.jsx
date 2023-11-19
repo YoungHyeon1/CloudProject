@@ -14,8 +14,8 @@ const Singup = ({ is_login }) => {
   const [confrim_code, setconfirm_code] = useState("");
 
   const poolData = {
-    UserPoolId: "ap-northeast-2_a8RRLuYd3",
-    ClientId: "5dqmd1k888feth0u56mgckajlh",
+    UserPoolId: "ap-northeast-2_PaBnNNLer",
+    ClientId: "1ebc5fc6desmg3hr9pr3otuea7",
   };
   const userPool = new CognitoUserPool(poolData);
 
@@ -27,7 +27,19 @@ const Singup = ({ is_login }) => {
       }),
       new CognitoUserAttribute({
         Name: "nickname",
-        Value: nickname, // 사용자가 입력한 이메일 주소
+        Value: nickname, // userName
+      }),
+      new CognitoUserAttribute({
+        Name: "custom:chanelName",
+        Value: "",
+      }),
+      new CognitoUserAttribute({
+        Name: "custom:playbackUrl",
+        Value: "",
+      }),
+      new CognitoUserAttribute({
+        Name: "custom:streamKey",
+        Value: "",
       }),
     ];
 
@@ -49,14 +61,13 @@ const Singup = ({ is_login }) => {
     });
 
     cognitoUser.confirmRegistration(confrim_code, true, (err, result) => {
+      is_login(true);
       if (err) {
         alert(err.message || JSON.stringify(err));
         return;
       }
     });
-
     alert("회원가입 완료");
-    is_login(true);
   };
 
   const reConfrimCode = async () => {

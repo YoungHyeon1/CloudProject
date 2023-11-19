@@ -1,0 +1,28 @@
+.aside {
+    /* 사이드바 스타일링 */
+    border-right: 1px solid #ccc;
+    padding: 20px;
+  }
+  
+  .users-list {
+    height: 45vh;
+  }
+
+  .aside ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .aside li {
+    margin-bottom: 10px;
+  }
+  
+  .aside a {
+    text-decoration: none;
+    color: #333;
+  }
+  
+  .aside a:hover {
+    color: blue;
+  }
+  

@@ -16,8 +16,8 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const poolData = {
-    UserPoolId: "ap-northeast-2_a8RRLuYd3",
-    ClientId: "5dqmd1k888feth0u56mgckajlh",
+    UserPoolId: "ap-northeast-2_PaBnNNLer",
+    ClientId: "1ebc5fc6desmg3hr9pr3otuea7",
   };
   const userPool = new CognitoUserPool(poolData);
 
@@ -37,7 +37,8 @@ const Login = () => {
 
     cognitoUser.authenticateUser(authenticationDetails, {
       onSuccess: (session) => {
-        auth_login(session.getAccessToken().getJwtToken());
+        console.log(session);
+        auth_login(session);
         navigate("/");
       },
       onFailure: (err) => {

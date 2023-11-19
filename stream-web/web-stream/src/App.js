@@ -7,21 +7,30 @@ import Footer from "./components/Footer/Footer";
 import LiveStreamPage from "./components/Stream/LiveStreamPage";
 import Users from "./components/Users/Users";
 import { AppProvider } from "./components/AppProvider";
-
+import Mypage from "./components/Mypage/Mypage";
+import Aside from "./components/Aside/Aside";
 function App() {
   return (
     <>
       <Router>
-        <AppProvider>
-          <Header />
-          <Routes>
-            <Route element={<Main />} path="/" />
-            <Route element={<LiveStreamPage />} path="/channel/:id" />
-            <Route element={<LiveStreamPage />} path="/about" />
-            <Route path="/login" element={<Users />} />
-          </Routes>
-          <Footer />
-        </AppProvider>
+        <div className="app">
+          <AppProvider>
+            <Header />
+            <div className="content-area">
+              <Aside />
+              <div className="main-content">
+                <Routes>
+                  <Route element={<Mypage />} path="/mypage" />
+                  <Route element={<Main />} path="/" />
+                  <Route element={<LiveStreamPage />} path="/channel/:id" />
+                  <Route element={<LiveStreamPage />} path="/about" />
+                  <Route path="/login" element={<Users />} />
+                </Routes>
+              </div>
+            </div>
+            <Footer />
+          </AppProvider>
+        </div>
       </Router>
     </>
   );
