@@ -22,7 +22,7 @@ const useWebSocket = (url) => {
           ...prevMessages,
           {
             Data: data.Message,
-            User: "TEST",
+            User: sessionStorage.getItem("userName"),
           },
         ];
         return update_data;

@@ -5,7 +5,7 @@ import "./Main.css";
 const Main = ({ streams }) => {
   return (
     <div className="index-container">
-      <h1 className="index-title">Available Streams</h1>
+      <h1 className="index-title">On Air</h1>
       {streams && streams.length > 0 ? (
         <div className="stream-list">
           {streams.map((stream, index) => (

@@ -12,8 +12,8 @@ const Header = () => {
       <nav className="main-nav">
         <Link to="/">Home</Link>
         <Link to="/about">About</Link>
-        {localStorage.getItem("userName") ? (
-          <Link to="/mypage">{localStorage.getItem("userName")}</Link>
+        {sessionStorage.getItem("userName") ? (
+          <Link to="/mypage">{sessionStorage.getItem("userName")}</Link>
         ) : (
           <Link to="/login">로그인</Link>
         )}

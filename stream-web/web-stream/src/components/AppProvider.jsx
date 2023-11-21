@@ -6,13 +6,16 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AppProvider = ({ children }) => {
   const auth_login = (session) => {
-    localStorage.setItem("accessToken", session.getAccessToken().getJwtToken());
-    localStorage.setItem("userName", session.getIdToken().payload.nickname);
+    sessionStorage.setItem(
+      "accessToken",
+      session.getAccessToken().getJwtToken()
+    );
+    sessionStorage.setItem("userName", session.getIdToken().payload.nickname);
   };
 
   const logout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("userName");
+    sessionStorage.removeItem("accessToken");
+    sessionStorage.removeItem("userName");
   };
 
   return (

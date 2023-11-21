@@ -1,8 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Chat from "./Chat";
 import "./Aside.css";
 
 function Aside() {
+  const [userList, setUserList] = useState("");
+
+  useEffect(() => {});
+
   return (
     <aside className="aside">
       <nav>
