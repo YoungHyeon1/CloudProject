@@ -76,6 +76,7 @@ resource "aws_lambda_permission" "cognito_lambda" {
   source_arn    = aws_cognito_user_pool.cognito_pool.arn
   // API Gateway의 소스 ARN은 선택적이며, 특정 API 또는 스테이지에 대한 권한을 제한하는 데 사용할 수 있습니다.
 }
+
 data "aws_iam_policy_document" "lambda_ivs" {
   statement {
     effect = "Allow"
