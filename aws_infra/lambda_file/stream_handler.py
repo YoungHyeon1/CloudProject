@@ -30,13 +30,16 @@ def get_cognito_users(event):
     user_pool_id = 'ap-northeast-2_PaBnNNLer'
 
     response = client.list_users(UserPoolId=user_pool_id)
-    
+    result = {}
     # 반환된 사용자 목록 사용
-    users = response['Users']
+    for user in response['Users']:
+        for attribute in user["attributes"]:
+            if attribute["Name"] in ["custom:chanelName", "custom:playbackUrl", "nickname"]:
+                result[attribute["Name"].replace("custom:", "")]=attribute["Value"]
         
     return {
         'statusCode': 200,
-        'body': json.dumps(users)
+        'body': json.dumps(result)
     }
 
 def get_ivs_status(event):
