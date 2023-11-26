@@ -20,26 +20,6 @@ resource "aws_cognito_user_pool" "cognito_pool" {
       max_length = 11
     }
   }
-  schema {
-    name                = "playbackUrl"
-    required            = false
-    mutable             = true
-    attribute_data_type = "String"
-    string_attribute_constraints {
-      min_length = 6
-      max_length = 256
-    }
-  }
-  schema {
-    name                = "streamKey"
-    required            = false
-    mutable             = true
-    attribute_data_type = "String"
-    string_attribute_constraints {
-      min_length = 6
-      max_length = 256
-    }
-  }
   lambda_config {
     post_confirmation = aws_lambda_function.lambda_cognito_trigger.arn
   }
@@ -85,20 +65,18 @@ data "aws_iam_policy_document" "lambda_ivs" {
       "logs:CreateLogGroup",
       "logs:CreateLogStream",
       "logs:PutLogEvents",
-      "ivs:CreateStage",
-      "ivs:CreateParticipantToken",
-      "ivs:GetStage",
-      "ivs:GetStageSession",
-      "ivs:ListStages",
-      "ivs:ListStageSessions",
       "lambda:InvokeFunction",
       "ivs:CreateChannel",
+      "ivschat:CreateRoom",
+      "dynamodb:PutItem",
       "cognito-idp:AdminUpdateUserAttributes"
     ]
 
     resources = [
       "*",
-      aws_cognito_user_pool.cognito_pool.arn
+      "arn:aws:ivschat:ap-northeast-2:${var.accountId}:room/*",
+      aws_cognito_user_pool.cognito_pool.arn,
+      aws_dynamodb_table.cognito_ivs_integration.arn
     ]
   }
 

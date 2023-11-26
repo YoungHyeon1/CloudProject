@@ -3,7 +3,7 @@ import json
 
 import random
 import string
-
+dynamodb = boto3.resource('dynamodb')
 def generate_random_string(length=10):
     # 영어(대소문자), 숫자, 밑줄(_), 하이픈(-) 포함
     characters = string.ascii_letters + string.digits + "_-"
@@ -14,8 +14,9 @@ def generate_random_string(length=10):
 
 def create_room_handler(event, context):
     client = boto3.client('ivs')
+    client_chat = boto3.client('ivschat')
     cognito_client = boto3.client('cognito-idp')
-    user_pool_id = "ap-northeast-2_PaBnNNLer"  # Cognito 사용자 풀 ID
+    # cognito_client = boto3.client('cognito-idp')
     username = event['userName']
     chanel_name = generate_random_string()
     # IVS 채널 생성
@@ -25,25 +26,37 @@ def create_room_handler(event, context):
     )
 
 
-    cognito_response = cognito_client.admin_update_user_attributes(
-        UserPoolId=user_pool_id,
+    cognito_client.admin_update_user_attributes(
+        UserPoolId="ap-northeast-2_INqpBvMxg",
         Username=username,
         UserAttributes=[
             {
                 'Name': 'custom:chanelName',
                 'Value': chanel_name
-            },
-            {
-                'Name': 'custom:playbackUrl',
-                'Value': str(response["channel"]["playbackUrl"])
-            },
-            {
-                'Name': 'custom:streamKey',
-                'Value': str(response["streamKey"]["value"])
-            },
+            }
         ]
     )
-    # 생성된 채널 정보 로깅
-    print(json.dumps(response, indent=4))
 
-    return cognito_response
+    response_chat = client_chat.create_room(
+    name=chanel_name
+    )
+
+    user_info = {
+        "UserKey": event["request"]["userAttributes"]["sub"],
+        "SubKey": chanel_name,
+        "IvsArn": response["channel"]["arn"],
+        "email" : response["request"]["userAttributes"]["email"],
+        "IvsChatArn": response_chat["arn"],
+        "BoradCastTitle": "Input Title",
+        "IsLive": "false"
+    }
+
+    table = dynamodb.Table('UsersIntegration')
+    table.put_item(Item=user_info)
+    # 생성된 채널 정보 로깅
+    #print(json.dumps(response, indent=4))
+
+    return {
+        'statusCode': 200,
+        'body': "채널 생성완료"
+    }

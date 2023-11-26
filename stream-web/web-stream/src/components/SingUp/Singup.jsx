@@ -14,8 +14,8 @@ const Singup = ({ is_login }) => {
   const [confrim_code, setconfirm_code] = useState("");
 
   const poolData = {
-    UserPoolId: "ap-northeast-2_PaBnNNLer",
-    ClientId: "1ebc5fc6desmg3hr9pr3otuea7",
+    UserPoolId: "ap-northeast-2_INqpBvMxg",
+    ClientId: "o43d44nut01aqi5im5l30l0fi",
   };
   const userPool = new CognitoUserPool(poolData);
 
@@ -31,14 +31,6 @@ const Singup = ({ is_login }) => {
       }),
       new CognitoUserAttribute({
         Name: "custom:chanelName",
-        Value: "",
-      }),
-      new CognitoUserAttribute({
-        Name: "custom:playbackUrl",
-        Value: "",
-      }),
-      new CognitoUserAttribute({
-        Name: "custom:streamKey",
         Value: "",
       }),
     ];

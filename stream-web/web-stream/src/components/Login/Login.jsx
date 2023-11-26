@@ -16,8 +16,8 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const poolData = {
-    UserPoolId: "ap-northeast-2_PaBnNNLer",
-    ClientId: "1ebc5fc6desmg3hr9pr3otuea7",
+    UserPoolId: "ap-northeast-2_INqpBvMxg",
+    ClientId: "o43d44nut01aqi5im5l30l0fi",
   };
   const userPool = new CognitoUserPool(poolData);
 
