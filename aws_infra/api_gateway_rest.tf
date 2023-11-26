@@ -82,16 +82,23 @@ data "aws_iam_policy_document" "stream_policy_document" {
       "logs:CreateLogStream",
       "logs:PutLogEvents",
       "cognito-idp:ListUsers",
+      "cognito-idp:ListUsers",
       "cognito-idp:AdminGetUser",
       "ivs:ListChannels",
       "ivs:ListStreams",
-      "ivs:GetChannel"
+      "ivs:GetChannel",
+      "dynamodb:PutItem",
+      "dynamodb:GetItem",
+      "dynamodb:UpdateItem",
+      "dynamodb:Query",
+      "dynamodb:Scan",
+      "dynamodb:DeleteItem"
     ]
 
     resources = [
       "*",
       "arn:aws:ivs:ap-northeast-2:${var.accountId}:channel/*",
-
+      aws_dynamodb_table.cognito_ivs_integration.arn
     ]
   }
 }

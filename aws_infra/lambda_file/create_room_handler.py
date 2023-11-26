@@ -45,7 +45,7 @@ def create_room_handler(event, context):
         "UserKey": event["request"]["userAttributes"]["sub"],
         "SubKey": chanel_name,
         "IvsArn": response["channel"]["arn"],
-        "email" : response["request"]["userAttributes"]["email"],
+        "email" : event["request"]["userAttributes"]["email"],
         "IvsChatArn": response_chat["arn"],
         "BoradCastTitle": "Input Title",
         "IsLive": "false"
