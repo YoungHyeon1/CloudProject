@@ -29,7 +29,6 @@ function App() {
                           { id: "2", name: "test2" },
                           { id: "3", name: "test2" },
                           { id: "4", name: "test2" },
-                          { id: "5", name: "test2" },
                         ]}
                       />
                     }
