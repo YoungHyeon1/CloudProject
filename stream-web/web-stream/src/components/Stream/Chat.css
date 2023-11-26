@@ -1,0 +1,72 @@
+/* Chat.css */
+.chat-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 600px; /* Use full height of parent */
+    border: 1px solid #ccc; /* border for chat box */
+
+  }
+  
+  .chat-messages {
+    position: relative;
+    flex: 1;
+    overflow-y: auto; /* Scrollable */
+    padding: 10px;
+    background: #f9f9f9; /* Light grey background */
+  }
+  
+  .chat-message {
+    margin-bottom: 8px;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .chat-message strong {
+    color: #6441a5; /* Twitch primary color */
+  }
+  
+  .chat-input-form {
+    position : relative;
+    bottom : 0;
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ccc; /* separates input from messages */
+  }
+  
+  .chat-input {
+    flex-grow: 1; /* Input field takes up the available space */
+    padding: 8px;
+    margin-right: 8px; /* Spacing between input field and button */
+    border: 1px solid #ccc; /* Border for the input field */
+    border-radius: 4px; /* Rounded corners for the input field */
+  }
+  
+  .chat-send-button {
+    padding: 8px 16px;
+    background-color: #6441a5; /* Twitch primary color */
+    color: white;
+    border: none;
+    border-radius: 4px; /* Rounded corners for the button */
+    cursor: pointer;
+  }
+  
+  .chat-send-button:hover {
+    background-color: #533d8b; /* Darker shade for hover state */
+  }
+  
+  /* Scrollbar styles for chat messages */
+  .chat-messages::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .chat-messages::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+  }
+  
+  .chat-messages::-webkit-scrollbar-track {
+    background: #efefef;
+  }
+  

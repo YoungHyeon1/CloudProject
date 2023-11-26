@@ -1,0 +1,31 @@
+/* LiveStreamPage.css */
+.live-stream-container {
+    display: flex;
+    max-width: 1200px;
+    margin: 20px auto;
+    gap: 20px; /* space between video and chat */
+  }
+  
+  .video-container {
+    flex: 3; /* video takes 3 times more space than chat */
+    background-color: #000; /* black background for video player */
+  }
+  
+
+  
+  /* Responsive adjustments */
+  @media (max-width: 1200px) {
+    .live-stream-container {
+      flex-direction: column;
+    }
+  
+    .video-container,
+    .chat-container {
+      width: 100%;
+    }
+  
+    .chat-container {
+      height: 300px; /* smaller fixed height for mobile */
+    }
+  }
+  

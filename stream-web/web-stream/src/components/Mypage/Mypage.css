@@ -1,0 +1,47 @@
+/* MyProfile.css */
+.profile-container {
+    max-width: 600px;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.profile-container h2 {
+    color: #9147ff; /* Twitch 메인 컬러 */
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input[type="text"],
+.form-group textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.form-group input[type="file"] {
+    display: block;
+}
+
+button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #9147ff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #772ce8;
+}

@@ -1,0 +1,53 @@
+/* IndexPage.css */
+.index-container {
+    padding: 20px;
+    background-color: #f7f7f8;
+    height: 100%; /* Use full height */
+  }
+  
+  .index-title {
+    text-align: center;
+    color: #6441a5;
+  }
+  
+  .stream-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    padding-top: 20px;
+  }
+  
+  .stream {
+    width: 200px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    color: #333;
+    text-decoration: none;
+  }
+  
+  .stream-thumbnail {
+    height: 150px;
+    background-color: #eee;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    border-radius: 8px 8px 0 0;
+  }
+  
+  .empty-stream-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .empty-stream-box {
+    width: 200px;
+    height: 150px;
+    background-color: #ccc;
+    border-radius: 8px;
+  }
+  
+  /* Add any additional styles for typography, layout, etc. */
+  

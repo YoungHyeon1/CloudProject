@@ -1,0 +1,23 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 90vh;
+}
+
+.content-area {
+  display: flex;
+  flex: 1;
+}
+
+.aside {
+  width: 200px; /* 사이드바 너비 */
+  /* 사이드바 스타일링 */
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+  /* 메인 컨텐츠 영역 스타일링 */
+}
+
+/* Header, Footer 등의 스타일링 */
