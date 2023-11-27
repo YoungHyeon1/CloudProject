@@ -87,6 +87,7 @@ data "aws_iam_policy_document" "stream_policy_document" {
       "ivs:ListChannels",
       "ivs:ListStreams",
       "ivs:GetChannel",
+      "ivschat:GetRoom",
       "dynamodb:PutItem",
       "dynamodb:GetItem",
       "dynamodb:UpdateItem",
@@ -98,6 +99,7 @@ data "aws_iam_policy_document" "stream_policy_document" {
     resources = [
       "*",
       "arn:aws:ivs:ap-northeast-2:${var.accountId}:channel/*",
+      "arn:aws:ivschat:ap-northeast-2:${var.accountId}:room/*",
       aws_dynamodb_table.cognito_ivs_integration.arn
     ]
   }

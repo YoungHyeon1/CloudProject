@@ -45,6 +45,7 @@ def get_cognito_users(event):
 
 def get_ivs_status(event):
     client = boto3.client('ivs')
+    chat_client = boto3.client('ivschat')
     cognito_client = boto3.client('cognito-idp')
     table = dynamodb.Table('UsersIntegration')
     # IVS 방송 상태 확인 로직
@@ -53,7 +54,7 @@ def get_ivs_status(event):
     response = table.scan()
     for item in response["Items"]:
         result_dict = {}
-        if item["IsLive"] == "false":
+        if item["IsLive"] == "true":
             try:
                 if item.get("email") is None:
                     continue
@@ -68,7 +69,7 @@ def get_ivs_status(event):
                 ivs_response = client.get_channel(arn=item["IvsArn"])
                 result_dict["play_back"] = ivs_response["channel"]["playbackUrl"]
 
-                if result:
+                if result_dict:
                     result.append(result_dict)
             except Exception as e:
                 print(e)
