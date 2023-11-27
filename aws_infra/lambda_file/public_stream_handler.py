@@ -7,15 +7,13 @@ table = dynamodb.Table('ChatMessages')
 user_pool_id = 'ap-northeast-2_INqpBvMxg'
 cognito_app_id = 'o43d44nut01aqi5im5l30l0fi'
 
-def stream_handler(event, context):
+def public_stream_handler(event, context):
     # event에서 메시지 데이터 추출
     try:
-        if event.get('path') == '/users':
+        if event.get('path') == '/public/users':
             return get_cognito_users(event)
-        elif event.get('path') == '/broad_cast_status':
+        elif event.get('path') == '/public/broad_cast_status':
             return get_ivs_status(event)
-        elif event.get('path') == '/get_caht':
-            pass
         else:
             return {
                 'statusCode': 400,
@@ -80,15 +78,3 @@ def get_ivs_status(event):
         'statusCode': 200,
         'body': json.dumps(result)
     }
-
-
-def create_token(event):
-
-    pass
-    # return {
-    #     'statusCode': 200,
-    #     'body': json.dumps({
-    #         'claims': claims,
-    #         'userAttributes': user_info['UserAttributes']
-    #     })
-    # }
