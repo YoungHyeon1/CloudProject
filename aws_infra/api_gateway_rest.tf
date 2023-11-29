@@ -153,7 +153,8 @@ data "aws_iam_policy_document" "stream_policy_document" {
       "dynamodb:UpdateItem",
       "dynamodb:Query",
       "dynamodb:Scan",
-      "dynamodb:DeleteItem"
+      "dynamodb:DeleteItem",
+      "ivschat:CreateChatToken"
     ]
 
     resources = [
