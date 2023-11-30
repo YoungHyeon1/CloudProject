@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import "./Mypage.css"; // 스타일시트 import
+import { useAuth } from "../AppProvider";
+import { useNavigate } from "react-router-dom";
 
 function Mypage() {
   const [broadcastTitle, setBroadcastTitle] = useState("");
   const [profileImage, setProfileImage] = useState("");
   const [personalInfo, setPersonalInfo] = useState("");
+  const { logout } = useAuth();
+  const navigate = useNavigate();
 
   const handleBroadcastTitleChange = (e) => {
     setBroadcastTitle(e.target.value);
@@ -21,6 +25,11 @@ function Mypage() {
   const handleSubmit = (e) => {
     e.preventDefault();
     // 설정 저장 로직
+  };
+
+  const handleSingout = (e) => {
+    logout();
+    navigate("/");
   };
 
   return (
@@ -44,6 +53,9 @@ function Mypage() {
           <textarea value={personalInfo} onChange={handlePersonalInfoChange} />
         </div>
         <button type="submit">저장</button>
+        <button type="submit" onClick={handleSingout}>
+          로그아웃
+        </button>
       </form>
     </div>
   );

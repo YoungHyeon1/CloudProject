@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../AppProvider";
+import * as config from "../../config";
 
 import {
   AuthenticationDetails,
@@ -16,8 +17,8 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const poolData = {
-    UserPoolId: "ap-northeast-2_INqpBvMxg",
-    ClientId: "o43d44nut01aqi5im5l30l0fi",
+    UserPoolId: config.UserPoolId,
+    ClientId: config.ClientId,
   };
   const userPool = new CognitoUserPool(poolData);
 
@@ -37,8 +38,9 @@ const Login = () => {
 
     cognitoUser.authenticateUser(authenticationDetails, {
       onSuccess: (session) => {
+        sessionStorage.setItem("nickname", session.idToken.payload.nickname);
         console.log(session);
-        auth_login(session);
+        auth_login();
         navigate("/");
       },
       onFailure: (err) => {
