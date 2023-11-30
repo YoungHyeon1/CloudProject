@@ -7,6 +7,12 @@ table = dynamodb.Table('ChatMessages')
 user_pool_id = 'ap-northeast-2_INqpBvMxg'
 cognito_app_id = 'o43d44nut01aqi5im5l30l0fi'
 
+header = {
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+            'Content-Type': 'application/json',
+        },
 def public_stream_handler(event, context):
     # event에서 메시지 데이터 추출
     try:
@@ -41,6 +47,7 @@ def get_cognito_users(event):
         user_attributes.append(attributes)
     return {
         'statusCode': 200,
+        'headers': header,
         'body': json.dumps(user_attributes)
     }
 
@@ -76,5 +83,6 @@ def get_ivs_status(event):
 
     return {
         'statusCode': 200,
+        'headers': header,
         'body': json.dumps(result)
     }

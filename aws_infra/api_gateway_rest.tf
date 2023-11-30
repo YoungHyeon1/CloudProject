@@ -96,7 +96,6 @@ resource "aws_lambda_permission" "api_gw_rest_lambda" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.stream_handler.function_name
   principal     = "apigateway.amazonaws.com"
-  # More: http://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-control-access-using-iam-policies-to-invoke-api.html
   source_arn = "arn:aws:execute-api:${var.myregion}:${var.accountId}:${aws_api_gateway_rest_api.stream_api.id}/*/${aws_api_gateway_method.stream_get_method.http_method}${aws_api_gateway_resource.stream_resource.path}"
 }
 
@@ -105,7 +104,6 @@ resource "aws_lambda_permission" "api_gw_rest_lambda_public" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.public_stream_handler.function_name
   principal     = "apigateway.amazonaws.com"
-  # More: http://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-control-access-using-iam-policies-to-invoke-api.html
   source_arn = "arn:aws:execute-api:${var.myregion}:${var.accountId}:${aws_api_gateway_rest_api.stream_api.id}/*/${aws_api_gateway_method.public_stream_get_method.http_method}${aws_api_gateway_resource.public_stream_resource.path}"
 }
 
