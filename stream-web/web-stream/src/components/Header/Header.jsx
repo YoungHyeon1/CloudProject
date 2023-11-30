@@ -7,7 +7,8 @@ const Header = () => {
   return (
     <header className="site-header">
       <Link to="/" className="logo">
-        StreamingService
+        <img src="../../../Mainlogo.png" className="mainlogo"></img>
+        CLOUMER
       </Link>
       <nav className="main-nav">
         <Link to="/">Home</Link>
