@@ -20,12 +20,6 @@ export const AppProvider = ({ children }) => {
 
   const auth_login = (session) => {
     setIsLogin(true);
-    // const auth_login = (session) => {
-    //   sessionStorage.setItem(
-    //     "accessToken",
-    //     session.getAccessToken().getJwtToken()
-    //   );
-    //   sessionStorage.setItem("userName", session.getIdToken().payload.nickname);
   };
 
   const logout = () => {

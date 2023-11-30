@@ -11,7 +11,7 @@ header = {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
             'Content-Type': 'application/json',
-        },
+        }
 
 
 def public_stream_handler(event, context):
@@ -19,7 +19,7 @@ def public_stream_handler(event, context):
     try:
         if event.get('path') == '/public/users':
             return get_cognito_users(event)
-        elif event.get('path') == '/public/broad_cast_status':
+        elif event.get('path') == '/public/broadcast_status':
             return get_ivs_status(event)
         else:
             return {
@@ -64,7 +64,7 @@ def get_ivs_status(event):
     response = table.scan()
     for item in response["Items"]:
         result_dict = {}
-        if item["IsLive"] == "true":
+        if item["IsLive"] == "false":
             try:
                 if item.get("email") is None:
                     continue
