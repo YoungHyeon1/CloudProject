@@ -14,13 +14,14 @@ def stream_handler(event, context):
             return {
                 'statusCode': 404,
                 'body': json.dumps('NOT FOUND')
-            } 
+            }
     except Exception as e:
         print(e)
     return {
         'statusCode': 200,
         'headers': {'Content-Type': 'application/json'}
     }
+
 
 def create_token(event):
     '''
@@ -38,17 +39,20 @@ def create_token(event):
 
     result = {}
     client = boto3.client('ivschat')
-    table=dynamodb.Table('UsersIntegration')
-    chanel_name = event['requestContext']['authorizer']['claims']['custom:chanelName']
+    table = dynamodb.Table('UsersIntegration')
+    chanel_name = (
+        event['requestContext']['authorizer']
+        ['claims']['custom:chanelName']
+    )
     try:
         response = table.query(
             KeyConditionExpression=Key('SubKey').eq(target_chanel)
         )
-        chat_arn=response['Items'][0]['IvsChatArn']
-    
+        chat_arn = response['Items'][0]['IvsChatArn']
+
         chat_response = client.create_chat_token(
             capabilities=['SEND_MESSAGE'],
-            roomIdentifier= chat_arn,
+            roomIdentifier=chat_arn,
             sessionDurationInMinutes=100,
             userId=chanel_name
         )

@@ -1,5 +1,6 @@
 import boto3
 
+
 def ivs_status_handler(event, context):
 
     dynamodb = boto3.resource('dynamodb')
@@ -7,9 +8,9 @@ def ivs_status_handler(event, context):
 
     ivs_status = event["detail"]["event_name"]
 
-    ivs_status_value = "true" if ivs_status=="Stream Start" else "false"
+    ivs_status_value = "true" if ivs_status == "Stream Start" else "false"
 
-    update_response = table.update_item(
+    table.update_item(
         Key={
             'SubKey': event["detail"]["channel_name"]
         },
