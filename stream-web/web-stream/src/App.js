@@ -5,6 +5,7 @@ import Main from "./components/Main";
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
 import LiveStreamPage from "./components/Stream/LiveStreamPage";
+import Chat from "./components/Stream/Chat";
 import Users from "./components/Users/Users";
 import { AppProvider } from "./components/AppProvider";
 import Mypage from "./components/Mypage/Mypage";
@@ -22,8 +23,7 @@ function App() {
                 <Routes>
                   <Route element={<Mypage />} path="/mypage" />
                   <Route element={<Main />} path="/" />
-                  <Route element={<LiveStreamPage />} path="/channel/:id" />
-                  <Route element={<LiveStreamPage />} path="/about" />
+                  <Route element={<Chat />} path="/channel/:id" />
                   <Route path="/login" element={<Users />} />
                 </Routes>
               </div>
