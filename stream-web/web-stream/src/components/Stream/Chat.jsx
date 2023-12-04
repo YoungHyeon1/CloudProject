@@ -41,33 +41,37 @@ const Chat = () => {
     UserPoolId: config.UserPoolId,
     ClientId: config.ClientId,
   });
-  // Fetches a chat token
-  const  tokenProvider = (selectedUsername) => {
-    var token;
-    getCurrentUserToken().then( (idToken) => {
-      try {
-        console.log(idToken)
-        const response = fetch(
-          `https://xw6vimxva3.execute-api.ap-northeast-2.amazonaws.com/develop/stream/get_caht?targetChanel=${id}`,
-          {
-            headers: {
-              Authorization: idToken,
-              "Connection": "application/json",
-            },
-            method: "GET",
-          }
-        );
-        const data = response;
-        token = {
-          token: data.token,
-        };
-      } catch (error) {
-        console.log("Error TEST")
-        console.log("Error:", error);
-      }
-    });
 
-    return token;
+  const axiosApi = axios.create({
+    baseURL: config.ApiUrl,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  // Fetches a chat token
+  const tokenProvider = async () => {
+    const idToken = await getCurrentUserToken();
+    var token;
+    try {
+      const response = await axiosApi.get(
+        `/stream/get_caht?targetChanel=${id}`,
+        {
+          headers: {
+            Authorization: idToken,
+          },
+        }
+      );
+      token = {
+        token: response.data.token,
+        sessionExpirationTime: new Date(response.data.sessionExpirationTime),
+        tokenExpirationTime: new Date(response.data.tokenExpirationTime),
+      };
+      console.log("token", token);
+      return token;
+    } catch (error) {
+      console.log("Error:", error);
+    }
   };
 
   function getCurrentUserToken() {
@@ -88,15 +92,13 @@ const Chat = () => {
     });
   }
 
-  const handleGetToken = (selectedUsername) => {
-    // Set application state
-    setUsername(selectedUsername);
-
+  const handleGetToken = () => {
     // Instantiate a chat room
     const room = new ChatRoom({
       regionOrUrl: config.Resion,
-      tokenProvider: async () => tokenProvider(selectedUsername),
+      tokenProvider: () => tokenProvider(),
     });
+
     setChatRoom(room);
 
     // Connect to the chat room
@@ -104,7 +106,7 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    handleGetToken(sessionStorage.getItem("nickname"));
+    handleGetToken();
     // If chat room listeners are not available, do not continue
     if (!chatRoom.addListener) {
       return;

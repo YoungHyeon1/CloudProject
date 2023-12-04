@@ -4,6 +4,11 @@ from boto3.dynamodb.conditions import Key
 
 dynamodb = boto3.resource('dynamodb')
 
+headers = {
+    'Access-Control-Allow-Headers': '*',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'OPTIONS, POST, GET'
+}
 
 def stream_handler(event, context):
     # event에서 메시지 데이터 추출
@@ -19,7 +24,7 @@ def stream_handler(event, context):
         print(e)
     return {
         'statusCode': 200,
-        'headers': {'Content-Type': 'application/json'}
+        'headers': headers,
     }
 
 
@@ -34,6 +39,7 @@ def create_token(event):
     if target_chanel is None:
         return {
             'statusCode': 400,
+            'headers': headers,
             'body': json.dumps('Invalid request')
         }
 
@@ -56,12 +62,16 @@ def create_token(event):
             sessionDurationInMinutes=100,
             userId=chanel_name
         )
-        result['token'] = chat_response['token']
+        result["sessionExpirationTime"] = chat_response["sessionExpirationTime"].isoformat()
+        result["tokenExpirationTime"] = chat_response["tokenExpirationTime"].isoformat()
+        result["token"] = chat_response["token"]
+
 
     except Exception as e:
         print(e)
 
     return {
         'statusCode': 200,
+        'headers': headers,
         'body': json.dumps(result)
     }

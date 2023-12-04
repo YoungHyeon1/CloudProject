@@ -33,7 +33,7 @@ const Main = () => {
       <h1 className="index-title">On Air</h1>
       {streams && streams.length > 0 ? (
         <div className="stream-list">
-          {streams.map((stream, index) => (
+          {streams.map((stream) => (
             <div
               onClick={() => streamCardHandler(stream.sub_key)}
               key={stream.sub_key}

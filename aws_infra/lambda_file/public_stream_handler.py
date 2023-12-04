@@ -28,10 +28,6 @@ def public_stream_handler(event, context):
             }
     except Exception as e:
         print(e)
-    return {
-        'statusCode': 200,
-        'headers': {'Content-Type': 'application/json'}
-    }
 
 
 def get_cognito_users(event):
@@ -79,11 +75,13 @@ def get_ivs_status(event):
                     if attr['Name'] in 'nickname'
                 ]
                 result_dict["nick_name"] = temp[0]
-
                 ivs_response = client.get_channel(arn=item["IvsArn"])
                 result_dict["play_back"] = (
                     ivs_response["channel"]["playbackUrl"]
                 )
+
+                result_dict["title"] = item["BoradCastTitle"]
+                result_dict["sub_key"] = item["SubKey"]
 
                 if result_dict:
                     result.append(result_dict)
