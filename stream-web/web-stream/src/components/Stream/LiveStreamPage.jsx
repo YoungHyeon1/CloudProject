@@ -74,7 +74,6 @@ const VideoPlayer = ({}) => {
       })
       .catch((err) => console.error("IVS Player 스크립트 로드 실패:", err));
   }, []); // eslint-disable-line
-
   return (
     <>
       <div className="player-wrapper">

@@ -41,32 +41,29 @@ const Chat = () => {
     UserPoolId: config.UserPoolId,
     ClientId: config.ClientId,
   });
-
   // Fetches a chat token
-  const tokenProvider = async (selectedUsername) => {
-    // const idToekn = getCurrentUserToken();
+  const  tokenProvider = (selectedUsername) => {
     var token;
-
-    getCurrentUserToken().then((idToken) => {
+    getCurrentUserToken().then( (idToken) => {
       try {
-        console.log(idToken);
+        console.log(idToken)
         const response = fetch(
           `https://xw6vimxva3.execute-api.ap-northeast-2.amazonaws.com/develop/stream/get_caht?targetChanel=${id}`,
           {
-            method: "GET", // 또는 'POST', 'PUT', 'DELETE' 등
             headers: {
-              "Content-Type": "application/json",
-              Authorization: idToken, // 토큰을 헤더에 포함
+              Authorization: idToken,
+              "Connection": "application/json",
             },
+            method: "GET",
           }
         );
-        console.log("TEST");
-        console.log(response);
+        const data = response;
         token = {
-          token: response.token,
+          token: data.token,
         };
       } catch (error) {
-        console.error("Error:", error);
+        console.log("Error TEST")
+        console.log("Error:", error);
       }
     });
 
@@ -76,14 +73,12 @@ const Chat = () => {
   function getCurrentUserToken() {
     return new Promise((resolve, reject) => {
       const currentUser = userPool.getCurrentUser();
-
       if (currentUser) {
         currentUser.getSession((err, session) => {
           if (err) {
             reject(err);
           } else {
             const accessToken = session.getIdToken().getJwtToken();
-            // 여기에서 ID Token 또는 Refresh Token도 가져올 수 있습니다.
             resolve(accessToken);
           }
         });
@@ -100,7 +95,7 @@ const Chat = () => {
     // Instantiate a chat room
     const room = new ChatRoom({
       regionOrUrl: config.Resion,
-      tokenProvider: () => tokenProvider(selectedUsername),
+      tokenProvider: async () => tokenProvider(selectedUsername),
     });
     setChatRoom(room);
 
