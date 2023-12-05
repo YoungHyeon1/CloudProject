@@ -24,7 +24,6 @@ import VideoPlayer from "./LiveStreamPage";
 import "./Chat.css";
 
 const Chat = () => {
-  const [showSignIn, setShowSignIn] = useState(true);
   const [username, setUsername] = useState("");
   const [moderator, setModerator] = useState(false);
   const [message, setMessage] = useState("");
@@ -117,8 +116,6 @@ const Chat = () => {
     }
 
     // Hide the sign in modal
-    setShowSignIn(false);
-
     const unsubscribeOnConnected = chatRoom.addListener("connect", () => {
       // Connected to the chat room.
       renderConnect();
@@ -285,9 +282,7 @@ const Chat = () => {
     }
   };
 
-  const handleOnClick = () => {
-    setShowSignIn(true);
-  };
+  const handleOnClick = () => {};
 
   const handleChange = (e) => {
     setMessage(e.target.value);
@@ -387,6 +382,7 @@ const Chat = () => {
   };
 
   const sendMessage = async (message) => {
+    console.log("request", message);
     const content = `${message.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}`;
     const request = new SendMessageRequest(content);
     try {

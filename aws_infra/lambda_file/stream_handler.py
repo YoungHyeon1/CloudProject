@@ -33,6 +33,7 @@ def create_token(event):
     event에서 인증된 Token의 파싱값을 가져옵니다.
     event에서 받은 params에서 채팅의 RoomToken값을 가져옵니다.
     '''
+    print(event)
     query_params = event.get('queryStringParameters', {})
     target_chanel = query_params.get('targetChanel', None)
 
@@ -60,8 +61,13 @@ def create_token(event):
             capabilities=['SEND_MESSAGE'],
             roomIdentifier=chat_arn,
             sessionDurationInMinutes=100,
-            userId=chanel_name
+            userId=chanel_name,
+            attributes = {
+                "username": event["requestContext"]["authorizer"]["claims"]["nickname"],
+                "avatar": "https://png.pngtree.com/png-vector/20190329/ourlarge/pngtree-vector-avatar-icon-png-image_889567.jpg"
+            }
         )
+        print(chat_response)
         result["sessionExpirationTime"] = chat_response["sessionExpirationTime"].isoformat()
         result["tokenExpirationTime"] = chat_response["tokenExpirationTime"].isoformat()
         result["token"] = chat_response["token"]
