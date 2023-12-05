@@ -382,7 +382,6 @@ const Chat = () => {
   };
 
   const sendMessage = async (message) => {
-    console.log("request", message);
     const content = `${message.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}`;
     const request = new SendMessageRequest(content);
     try {
