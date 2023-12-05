@@ -83,6 +83,7 @@ const Chat = () => {
             reject(err);
           } else {
             const accessToken = session.getIdToken().getJwtToken();
+            setUsername(session.idToken.payload.nickname);
             resolve(accessToken);
           }
         });
@@ -107,6 +108,9 @@ const Chat = () => {
 
   useEffect(() => {
     handleGetToken();
+  }, []);
+
+  useEffect(() => {
     // If chat room listeners are not available, do not continue
     if (!chatRoom.addListener) {
       return;
@@ -199,7 +203,7 @@ const Chat = () => {
       unsubscribeOnEventReceived();
       unsubscribeOnMessageDeleted();
     };
-  }, []);
+  }, [chatRoom]);
 
   useEffect(() => {
     const scrollToBottom = () => {

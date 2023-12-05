@@ -39,7 +39,6 @@ const Login = () => {
     cognitoUser.authenticateUser(authenticationDetails, {
       onSuccess: (session) => {
         sessionStorage.setItem("nickname", session.idToken.payload.nickname);
-        console.log(session);
         auth_login();
         navigate("/");
       },

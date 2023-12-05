@@ -6,8 +6,7 @@ import { useAuth } from "../AppProvider";
 import "./Header.css"; // Importing the CSS file for styling
 
 const Header = () => {
-  const { isLogin, logout, auth_login } = useAuth();
-  const [userName, setUserName] = useState("");
+  const { isLogin } = useAuth();
 
   return (
     <header className="site-header">
