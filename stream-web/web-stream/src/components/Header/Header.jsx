@@ -1,20 +1,27 @@
-// components/Header.js
 import React from "react";
 import { Link } from "react-router-dom";
-import "./Header.css"; // Importing the CSS file for styling
+import { useAuth } from "../AppProvider";
+import "./Header.css";
+
 
 const Header = () => {
+  /**
+   * 로그인이 되었는지는 AppProvider 의 Props입니다.
+   * isLogin은 boolean 입니다.
+   */
+  const { isLogin } = useAuth();
+
   return (
     <header className="site-header">
       <Link to="/" className="logo">
-        <img src="../../../Mainlogo.png" className="mainlogo"></img>
+        <img src="/images/Mainlogo.png" className="mainlogo"></img>
         CLOUMER
       </Link>
       <nav className="main-nav">
         <Link to="/">Home</Link>
         <Link to="/about">About</Link>
-        {sessionStorage.getItem("userName") ? (
-          <Link to="/mypage">{sessionStorage.getItem("userName")}</Link>
+        {isLogin ? (
+          <Link to="/mypage">{sessionStorage.getItem("nickname")}</Link>
         ) : (
           <Link to="/login">로그인</Link>
         )}

@@ -1,72 +1,102 @@
-import boto3
-from datetime import datetime
 import json
+import boto3
+from boto3.dynamodb.conditions import Key
 
 dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table('ChatMessages')
-user_pool_id = 'ap-northeast-2_PaBnNNLer'
+
+headers = {
+    'Access-Control-Allow-Headers': '*',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'OPTIONS, POST, GET'
+}
+
 
 def stream_handler(event, context):
-    # event에서 메시지 데이터 추출
+    '''
+    event에서 path를 가져와서 해당 path에 맞는 함수를 실행합니다.
+    - get_chat: 채팅을 위한 토큰을 생성합니다.
+    '''
     try:
-        if event.get('path') == '/users':
-            return get_cognito_users(event)
-        elif event.get('path') == '/broad_cast_status':
-            return get_ivs_status(event)
+        if event.get('path') == '/stream/get_caht':
+            return create_token(event)
         else:
             return {
-                'statusCode': 400,
-                'body': json.dumps('Invalid request')
-            } 
+                'statusCode': 404,
+                'body': json.dumps('NOT FOUND')
+            }
     except Exception as e:
         print(e)
     return {
         'statusCode': 200,
-        'headers': {'Content-Type': 'application/json'}
+        'headers': headers,
     }
 
-def get_cognito_users(event):
-    client = boto3.client('cognito-idp')
 
-    response = client.list_users(UserPoolId=user_pool_id)
-    exclude_attributes = ['sub', 'email_verified', 'email']
-    user_attributes = []
-    for user in response['Users']:
-        attributes = {
-            attr['Name']: attr['Value'] for 
-            attr in user['Attributes'] 
-            if attr['Name'] not in exclude_attributes
+def create_token(event):
+    '''
+    event에서 인증된 Token의 파싱값을 가져옵니다.
+    event에서 받은 params에서 채팅의 RoomToken값을 가져옵니다.
+    '''
+
+    # Query Params 를 가져옵니다.
+    query_params = event.get('queryStringParameters', {})
+    target_chanel = query_params.get('targetChanel', None)
+
+    if target_chanel is None:
+        return {
+            'statusCode': 400,
+            'headers': headers,
+            'body': json.dumps('Invalid request')
         }
-        user_attributes.append(attributes)
-    return {
-        'statusCode': 200,
-        'body': json.dumps(user_attributes)
-    }
 
-def get_ivs_status(event):
-    client = boto3.client('ivs')
-    cognito_client = boto3.client('cognito-idp')
+    result = {}
+
+    # Ivs Client, Dynamodb Client를 생성합니다.
+    client = boto3.client('ivschat')
     table = dynamodb.Table('UsersIntegration')
-    # IVS 방송 상태 확인 로직
+    chanel_name = (
+        event['requestContext']['authorizer']
+        ['claims']['custom:chanelName']
+    )
     try:
-        response = table.scan()
-        for item in response:
-            if item["IsLive"] == "true":
-                cognito_response = cognito_client.list_users(
-                    UserPoolId=user_pool_id,
-                     Username=item["email"]
-                )
-                users = response.get('Users', [])
+        response = table.query(
+            KeyConditionExpression=Key('SubKey').eq(target_chanel)
+        )
+        chat_arn = response['Items'][0]['IvsChatArn']
 
-        pass
-        return {
-            'statusCode': 200,
-            'body': channel_response
-        }
+        # Attribute의 URL은 추후 변경이 필요합니다.
+        # Ivs Client에서 토큰 생성작업입니다.
+        chat_response = client.create_chat_token(
+            capabilities=['SEND_MESSAGE'],
+            roomIdentifier=chat_arn,
+            sessionDurationInMinutes=100,
+            userId=chanel_name,
+            attributes={
+                "username": (
+                    event["requestContext"]["authorizer"]
+                         ["claims"]["nickname"]
+                ),
+                "avatar": (
+                    "https://png.pngtree.com/png-vector/20190329/"
+                    "ourlarge/pngtree-vector-avatar-icon-png-image_889567.jpg"
+                )
+            }
+        )
+        result["sessionExpirationTime"] = (
+            chat_response["sessionExpirationTime"]
+            .isoformat()
+        )
+        result["tokenExpirationTime"] = (
+            chat_response["tokenExpirationTime"]
+            .isoformat()
+        )
+        result["token"] = chat_response["token"]
+
     except Exception as e:
-        print("error line")
         print(e)
-        return {
-            'statusCode': 500,
-            'body': json.dumps({'message': 'Error retrieving live channels'})
-        }
+
+    return {
+        'statusCode': 200,
+        'headers': headers,
+        'body': json.dumps(result)
+    }
