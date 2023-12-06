@@ -522,7 +522,7 @@ const Chat = () => {
      * Props의 Key 값은 message.id 로 설정되어 있습니다.
      */
     return (
-      <div className="chat-line-wrapper" key={message.id}>
+      <div className="chat-line-wrapper" key={message.timestamp}>
         <div className="chat-line">
           <img
             className="chat-line-img"
@@ -553,6 +553,7 @@ const Chat = () => {
      *  채팅 UI에 메시지를 표시하는 코드입니다.
      */
     return messages.map(message => {
+      console.log(message.timestamp, message.id);
       switch (message.type) {
         case 'ERROR':
           const errorMessage = renderErrorMessage(message);
