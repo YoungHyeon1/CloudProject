@@ -10,6 +10,7 @@ headers = {
     'Access-Control-Allow-Methods': 'OPTIONS, POST, GET'
 }
 
+
 def stream_handler(event, context):
     '''
     event에서 path를 가져와서 해당 path에 맞는 함수를 실행합니다.
@@ -50,7 +51,7 @@ def create_token(event):
 
     result = {}
 
-    #Ivs Client, Dynamodb Client를 생성합니다.
+    # Ivs Client, Dynamodb Client를 생성합니다.
     client = boto3.client('ivschat')
     table = dynamodb.Table('UsersIntegration')
     chanel_name = (
@@ -70,15 +71,26 @@ def create_token(event):
             roomIdentifier=chat_arn,
             sessionDurationInMinutes=100,
             userId=chanel_name,
-            attributes = {
-                "username": event["requestContext"]["authorizer"]["claims"]["nickname"],
-                "avatar": "https://png.pngtree.com/png-vector/20190329/ourlarge/pngtree-vector-avatar-icon-png-image_889567.jpg"
+            attributes={
+                "username": (
+                    event["requestContext"]["authorizer"]
+                         ["claims"]["nickname"]
+                ),
+                "avatar": (
+                    "https://png.pngtree.com/png-vector/20190329/"
+                    "ourlarge/pngtree-vector-avatar-icon-png-image_889567.jpg"
+                )
             }
         )
-        result["sessionExpirationTime"] = chat_response["sessionExpirationTime"].isoformat()
-        result["tokenExpirationTime"] = chat_response["tokenExpirationTime"].isoformat()
+        result["sessionExpirationTime"] = (
+            chat_response["sessionExpirationTime"]
+            .isoformat()
+        )
+        result["tokenExpirationTime"] = (
+            chat_response["tokenExpirationTime"]
+            .isoformat()
+        )
         result["token"] = chat_response["token"]
-
 
     except Exception as e:
         print(e)
