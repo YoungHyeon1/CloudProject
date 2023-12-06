@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import './StreamCard.css'; // 스타일시트 임포트
 
 function VideoCard({ thumbnail, title, channel }) {
@@ -16,7 +17,7 @@ function VideoCard({ thumbnail, title, channel }) {
 export default VideoCard;
 
 VideoCard.propTypes = {
-  thumbnail: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
-  channel: PropTypes.string.isRequired,
+  title: PropTypes.string,
+  channel: PropTypes.string,
+  thumbnail: PropTypes.string,
 };

@@ -1,37 +1,38 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import {
   CognitoUserPool,
   CognitoUser,
   CognitoUserAttribute,
-} from "amazon-cognito-identity-js";
-import "./Singup.css";
+} from 'amazon-cognito-identity-js';
+import './Singup.css';
 
 const Singup = ({ is_login }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [nickname, setNickname] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [nickname, setNickname] = useState('');
   const [confirm, setconfirm] = useState(false);
-  const [confrim_code, setconfirm_code] = useState("");
+  const [confrim_code, setconfirm_code] = useState('');
 
   const poolData = {
-    UserPoolId: "ap-northeast-2_INqpBvMxg",
-    ClientId: "o43d44nut01aqi5im5l30l0fi",
+    UserPoolId: 'ap-northeast-2_INqpBvMxg',
+    ClientId: 'o43d44nut01aqi5im5l30l0fi',
   };
   const userPool = new CognitoUserPool(poolData);
 
   const signUp = async () => {
     const attributeList = [
       new CognitoUserAttribute({
-        Name: "email",
+        Name: 'email',
         Value: email, // 사용자가 입력한 이메일 주소
       }),
       new CognitoUserAttribute({
-        Name: "nickname",
+        Name: 'nickname',
         Value: nickname, // userName
       }),
       new CognitoUserAttribute({
-        Name: "custom:chanelName",
-        Value: "",
+        Name: 'custom:chanelName',
+        Value: '',
       }),
     ];
 
@@ -42,7 +43,7 @@ const Singup = ({ is_login }) => {
       }
       setconfirm(true);
       const cognitoUser = result.user;
-      console.log("User name is " + cognitoUser.getUsername());
+      console.log('User name is ' + cognitoUser.getUsername());
     });
   };
 
@@ -59,7 +60,7 @@ const Singup = ({ is_login }) => {
         return;
       }
     });
-    alert("회원가입 완료");
+    alert('회원가입 완료');
   };
 
   const reConfrimCode = async () => {
@@ -73,7 +74,7 @@ const Singup = ({ is_login }) => {
         return;
       }
       console.log(result);
-      alert("인증코드가 재전송되었습니다. 이메일을 확인하세요.");
+      alert('인증코드가 재전송되었습니다. 이메일을 확인하세요.');
     });
   };
 
@@ -84,7 +85,7 @@ const Singup = ({ is_login }) => {
         id="confirm"
         type="text"
         value={confrim_code}
-        onChange={(e) => setconfirm_code(e.target.value)}
+        onChange={e => setconfirm_code(e.target.value)}
       />
       <div className="user_toggle">
         <button
@@ -112,7 +113,7 @@ const Singup = ({ is_login }) => {
         <input
           type="text"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={e => setEmail(e.target.value)}
         />
       </div>
       <div className="input-group">
@@ -120,7 +121,7 @@ const Singup = ({ is_login }) => {
         <input
           type="password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={e => setPassword(e.target.value)}
         />
       </div>
 
@@ -129,7 +130,7 @@ const Singup = ({ is_login }) => {
         <input
           type="text"
           value={nickname}
-          onChange={(e) => setNickname(e.target.value)}
+          onChange={e => setNickname(e.target.value)}
         />
       </div>
       {confirm && confirm_div}
@@ -141,3 +142,7 @@ const Singup = ({ is_login }) => {
 };
 
 export default Singup;
+
+Singup.propTypes = {
+  is_login: PropTypes.PropTypes,
+};

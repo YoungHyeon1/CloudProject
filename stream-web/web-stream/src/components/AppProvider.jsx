@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import * as config from '../config';
+import PropTypes from 'prop-types';
 import {
   CognitoUserPool,
   CognitoUser,
