@@ -1,10 +1,10 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import * as config from "../config";
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import * as config from '../config';
 import {
   CognitoUserPool,
   CognitoUser,
   CognitoRefreshToken,
-} from "amazon-cognito-identity-js";
+} from 'amazon-cognito-identity-js';
 
 const AuthContext = createContext(null);
 
@@ -32,11 +32,11 @@ const refreshSession = (username, refreshTokenString, nickname) => {
       console.error(err);
       return;
     }
-    sessionStorage.setItem("nickname", nickname);
+    sessionStorage.setItem('nickname', nickname);
   });
 };
 
-const logoutSession = (username) => {
+const logoutSession = username => {
   const userData = {
     Username: username,
     Pool: userPool,
@@ -68,7 +68,7 @@ export const AppProvider = ({ children }) => {
   }, []);
   const [isLogin, setIsLogin] = useState(false);
 
-  const auth_login = (session) => {
+  const auth_login = session => {
     setIsLogin(true);
   };
 
@@ -83,4 +83,11 @@ export const AppProvider = ({ children }) => {
       {children}
     </AuthContext.Provider>
   );
+};
+
+AppProvider.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]).isRequired,
 };

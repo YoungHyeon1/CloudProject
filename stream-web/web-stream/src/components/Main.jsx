@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import StreamCard from "./StreamCard/StreamCard";
-import "./Main.css";
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import StreamCard from './StreamCard/StreamCard';
+import './Main.css';
 
 const Main = () => {
   const [streams, setStreams] = useState([]);
@@ -9,19 +9,18 @@ const Main = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-     // 현재 방송중인 스트림을 불러옵니다.
+    // 현재 방송중인 스트림을 불러옵니다.
     fetch(
-      "https://xw6vimxva3.execute-api.ap-northeast-2.amazonaws.com/develop/public/broadcast_status"
+      'https://xw6vimxva3.execute-api.ap-northeast-2.amazonaws.com/develop/public/broadcast_status'
     )
-      .then((res) => res.json())
-      .then((data) => {
+      .then(res => res.json())
+      .then(data => {
         setStreams(data);
         setIsLoading(false);
       });
   }, []);
 
-  const streamCardHandler = (id) => {
-    console.log(id);
+  const streamCardHandler = id => {
     navigate(`/channel/${id}`);
   };
 
@@ -35,7 +34,7 @@ const Main = () => {
       {/* {Request한 API에서 방송의 개수를 확인해 UI에 다르게 표시합니다.} */}
       {streams && streams.length > 0 ? (
         <div className="stream-list">
-          {streams.map((stream) => (
+          {streams.map(stream => (
             <div
               onClick={() => streamCardHandler(stream.sub_key)}
               key={stream.sub_key}
