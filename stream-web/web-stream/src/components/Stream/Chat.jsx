@@ -50,6 +50,14 @@ const Chat = () => {
 
   // Fetches a chat token
   const tokenProvider = async () => {
+    /* 
+    비동기로 토큰을 가져옵니다.
+    Url의 chanelName이 ID 로 입력받아 채팅 토큰을 가져옵니다.
+    return :
+      token: Token, 
+      sessionExpirationTime: Date,
+      tokenExpirationTime: Date
+    */
     const idToken = await getCurrentUserToken();
     var token;
     try {
@@ -66,7 +74,7 @@ const Chat = () => {
         sessionExpirationTime: new Date(response.data.sessionExpirationTime),
         tokenExpirationTime: new Date(response.data.tokenExpirationTime),
       };
-      console.log("token", token);
+      
       return token;
     } catch (error) {
       console.log("Error:", error);
@@ -74,7 +82,14 @@ const Chat = () => {
   };
 
   function getCurrentUserToken() {
+    /* 
+     Cognito SDK에 저장된 로그인 정보로 Token을 가져옵니다.
+     가져온 Token에서 Nickname은 로그인 정공 여부로 작성되어 추후 수정이 필요할 것 같습니다.
+      return :
+        accessIdToken: Token
+    */
     return new Promise((resolve, reject) => {
+      // Cognito Pool에서 로그인 정보를 가져옵니다.
       const currentUser = userPool.getCurrentUser();
       if (currentUser) {
         currentUser.getSession((err, session) => {
@@ -93,15 +108,16 @@ const Chat = () => {
   }
 
   const handleGetToken = () => {
-    // Instantiate a chat room
+    /*
+      tokenProvider 에서 생성된 Token을 사용해
+      IVS ChatRoom에 접속합니다.
+    */
     const room = new ChatRoom({
       regionOrUrl: config.Resion,
       tokenProvider: () => tokenProvider(),
     });
 
     setChatRoom(room);
-
-    // Connect to the chat room
     room.connect();
   };
 
@@ -110,14 +126,17 @@ const Chat = () => {
   }, []);
 
   useEffect(() => {
-    // If chat room listeners are not available, do not continue
+    /*
+      접속한 채팅룸의 상태를 확인합니다.
+      사용자의 상태 변경에 따라 업데이트 됩니다.
+    */
+
     if (!chatRoom.addListener) {
       return;
     }
 
-    // Hide the sign in modal
     const unsubscribeOnConnected = chatRoom.addListener("connect", () => {
-      // Connected to the chat room.
+      // 채팅방 연결코드입니다.
       renderConnect();
     });
 
@@ -152,7 +171,7 @@ const Chat = () => {
     const unsubscribeOnMessageReceived = chatRoom.addListener(
       "message",
       (message) => {
-        // Received a message
+        // IVS Chat 에서 받은 데이터를 처리하는 구간입니다.
         const messageType = message.attributes?.message_type || "MESSAGE";
         switch (messageType) {
           case "RAISE_HAND":
@@ -203,6 +222,9 @@ const Chat = () => {
   }, [chatRoom]);
 
   useEffect(() => {
+    /*
+      채팅이 업데이트 되면 최하단으로 이동하는 코드입니다.
+    */
     const scrollToBottom = () => {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     };
@@ -211,10 +233,11 @@ const Chat = () => {
 
   useEffect(() => {
     previousRaiseHandUsername.current = usernameRaisedHand;
-  }, []);
+  }, [usernameRaisedHand]);
 
-  // Handlers
+
   const handleError = (data) => {
+    // 채팅 UI에 오류를 표시하는 handler입니다.
     const username = "";
     const userId = "";
     const avatar = "";
@@ -238,6 +261,8 @@ const Chat = () => {
   };
 
   const handleMessage = (data) => {
+    // 채팅 UI에 메시지 표시하는 handler입니다.
+    // 작성될 메시지의 Props를 설정합니다.
     const username = data.sender.attributes.username;
     const userId = data.sender.userId;
     const avatar = data.sender.attributes.avatar;
@@ -261,6 +286,8 @@ const Chat = () => {
   };
 
   const handleEvent = (event) => {
+    // 채팅 UI에 이벤트를 표시하는 handler입니다.
+    // 메시지 삭제, 유저 내보내기 작업이 이루어집니다.
     const eventName = event.eventName;
     switch (eventName) {
       case "aws:DELETE_MESSAGE":
@@ -288,11 +315,12 @@ const Chat = () => {
     setMessage(e.target.value);
   };
 
-  const handleKeyDown = (e) => {
+  const handleKeyPress = (e) => {
+    // Github의 Issues 에서 작성한 OnkeyDown 의 오류를 해결하기 위한 코드입니다.
     if (e.key === "Enter") {
       if (message) {
         sendMessage(message);
-        setMessage("");
+        setMessage(() => {return ""});
       }
     }
   };
@@ -409,6 +437,10 @@ const Chat = () => {
 
   // Renderers
   const renderErrorMessage = (errorMessage) => {
+    /*
+      채팅 UI에 오류를 표시하는 코드입니다.
+      Props의 Key 값은 timestamp로 설정되어 있습니다.
+    */
     return (
       <div className="error-line" key={errorMessage.timestamp}>
         <p>{errorMessage.message}</p>
@@ -417,6 +449,10 @@ const Chat = () => {
   };
 
   const renderSuccessMessage = (successMessage) => {
+    /**
+     * 채팅 UI에 성공 메시지를 표시하는 코드입니다.
+     * Props의 Key 값은 timestamp로 설정되어 있습니다.
+     */
     return (
       <div className="success-line" key={successMessage.timestamp}>
         <p>{successMessage.message}</p>
@@ -486,6 +522,10 @@ const Chat = () => {
   );
 
   const renderMessage = (message) => {
+    /**
+     * 채팅 UI에 메시지를 표시하는 코드입니다.
+     * Props의 Key 값은 message.id 로 설정되어 있습니다.
+     */
     return (
       <div className="chat-line-wrapper" key={message.id}>
         <div className="chat-line">
@@ -514,6 +554,9 @@ const Chat = () => {
   };
 
   const renderMessages = () => {
+    /**
+     *  채팅 UI에 메시지를 표시하는 코드입니다.
+     */
     return messages.map((message) => {
       switch (message.type) {
         case "ERROR":
@@ -578,7 +621,7 @@ const Chat = () => {
             }
           />
           <div className="col-wrapper">
-            <div className="chat-wrapper">
+            <div className="chat-wrapper" >
               <div className="messages">
                 {renderMessages()}
                 <div ref={messagesEndRef} />
@@ -596,8 +639,8 @@ const Chat = () => {
                   value={message}
                   maxLength={500}
                   disabled={!isChatConnected()}
-                  onChange={handleChange}
-                  onKeyDown={handleKeyDown}
+                  onInput={handleChange}
+                  onKeyPress={handleKeyPress}
                 />
                 {!username && (
                   <fieldset>

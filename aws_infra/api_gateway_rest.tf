@@ -69,7 +69,6 @@ resource "aws_lambda_function" "public_stream_handler" {
   source_code_hash = filebase64sha256("lambda_file/public_stream_handler.zip")
 }
 
-# ------------------------------
 
 resource "aws_api_gateway_method" "stream_get_method" {
   rest_api_id   = aws_api_gateway_rest_api.stream_api.id

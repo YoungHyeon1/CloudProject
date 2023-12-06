@@ -9,6 +9,7 @@ import "./LiveStreamPage.css";
 const VideoPlayer = ({}) => {
   const [player, setPlayer] = useState(null);
 
+  // 이부분 수정을 해야합니다. Chat.jsx에서 URl을 받아 출력하면 좋을듯 합니다.
   const playbackUrl =
     "https://3d26876b73d7.us-west-2.playback.live-video.net/api/video/v1/us-west-2.913157848533.channel.rkCBS9iD1eyd.m3u8";
 
@@ -22,7 +23,10 @@ const VideoPlayer = ({}) => {
     });
   };
   useEffect(() => {
-    // First, check if the browser supports the Amazon IVS player.
+    /**
+     * 이전에 IVS Player가 두번 실행된적이 있어 이와같이 작업했습니다.
+     * Ivs Player의 스크립트를 불러와 Attach하고, 이벤트 리스너를 추가합니다.
+     */
     const MediaPlayerPackage = window.IVSPlayer;
 
     loadIVSPlayerScript()
@@ -59,7 +63,6 @@ const VideoPlayer = ({}) => {
             });
           }
 
-          // player.setVolume(0.5);
           return () => {
             if (newPlayer) {
               newPlayer.removeEventListener(PlayerState.PLAYING);
@@ -73,7 +76,7 @@ const VideoPlayer = ({}) => {
         }
       })
       .catch((err) => console.error("IVS Player 스크립트 로드 실패:", err));
-  }, []); // eslint-disable-line
+  }, []);
   return (
     <>
       <div className="player-wrapper">

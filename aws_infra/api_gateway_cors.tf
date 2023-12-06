@@ -1,3 +1,5 @@
+# 권한부여자 접근시 Preflight Request를 위한 CORS 설정 입니다.
+# Option 베이스에 동작합니다.
 resource "aws_api_gateway_method" "options_method" {
   rest_api_id   = aws_api_gateway_rest_api.stream_api.id
   resource_id   = aws_api_gateway_resource.stream_resource.id
@@ -5,6 +7,7 @@ resource "aws_api_gateway_method" "options_method" {
   authorization = "NONE"
 }
 
+# Option 베이스에 접근시 200 응답을 내려주기 위한 설정입니다.
 resource "aws_api_gateway_method_response" "response_200" {
   rest_api_id = aws_api_gateway_rest_api.stream_api.id
   resource_id = aws_api_gateway_resource.stream_resource.id
@@ -22,6 +25,7 @@ resource "aws_api_gateway_method_response" "response_200" {
   }
 }
 
+# option과 연결되는 integration 설정입니다.
 resource "aws_api_gateway_integration" "options_integration" {
   rest_api_id          = aws_api_gateway_rest_api.stream_api.id
   resource_id          = aws_api_gateway_resource.stream_resource.id
@@ -34,6 +38,7 @@ resource "aws_api_gateway_integration" "options_integration" {
   }
 }
 
+# option과 연결되는 integration response 설정입니다.
 resource "aws_api_gateway_integration_response" "integration_response_options" {
   rest_api_id = aws_api_gateway_rest_api.stream_api.id
   resource_id = aws_api_gateway_resource.stream_resource.id

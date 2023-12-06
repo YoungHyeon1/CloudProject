@@ -1,11 +1,14 @@
-// components/Header.js
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../AppProvider";
+import "./Header.css";
 
-import "./Header.css"; // Importing the CSS file for styling
 
 const Header = () => {
+  /**
+   * 로그인이 되었는지는 AppProvider 의 Props입니다.
+   * isLogin은 boolean 입니다.
+   */
   const { isLogin } = useAuth();
 
   return (

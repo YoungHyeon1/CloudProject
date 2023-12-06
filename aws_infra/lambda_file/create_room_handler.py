@@ -6,6 +6,10 @@ dynamodb = boto3.resource('dynamodb')
 
 
 def generate_random_string(length=10):
+    '''
+        ChanelName을 생성하는 코드입니다.
+        기본 10자리로 Cognito의 Attribute 또한 10~11  자리로 설정했습니다.
+    '''
     # 영어(대소문자), 숫자, 밑줄(_), 하이픈(-) 포함
     characters = string.ascii_letters + string.digits + "_-"
     # 무작위로 문자 선택하여 문자열 생성
@@ -14,10 +18,17 @@ def generate_random_string(length=10):
 
 
 def create_room_handler(event, context):
+    '''
+        사후인증 트리거입니다.
+        Cognito에 가입된 이메일 인증시 실행됩니다.
+        Cognito에 가입된 유저의 Attribute에 채널이름을 설정합니다.
+        채널이름은 랜덤으로 생성됩니다.
+        생성된 채널이름을 통해 IVS 채널과 IVS Chat방을 생성합니다.
+        생성된 정보는 Dynamodb에 저장합니다.
+    '''
     client = boto3.client('ivs')
     client_chat = boto3.client('ivschat')
     cognito_client = boto3.client('cognito-idp')
-    # cognito_client = boto3.client('cognito-idp')
     username = event['userName']
     chanel_name = generate_random_string()
     # IVS 채널 생성

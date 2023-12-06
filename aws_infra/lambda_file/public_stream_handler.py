@@ -15,7 +15,11 @@ header = {
 
 
 def public_stream_handler(event, context):
-    # event에서 메시지 데이터 추출
+    '''
+    event에서 path를 가져와서 해당 path에 맞는 함수를 실행합니다.
+    - get_cognito_users: Cognito에 가입된 유저들의 정보를 가져옵니다.
+    - get_ivs_status: IVS 방송 상태를 가져옵니다.
+    '''
     try:
         if event.get('path') == '/public/users':
             return get_cognito_users(event)
@@ -31,6 +35,11 @@ def public_stream_handler(event, context):
 
 
 def get_cognito_users(event):
+    '''
+    Cognito의 유저를 가져옵니다.
+    - params: event
+    - return: Nickname, ChanelName
+    '''
     client = boto3.client('cognito-idp')
 
     response = client.list_users(UserPoolId=user_pool_id)
@@ -51,11 +60,15 @@ def get_cognito_users(event):
 
 
 def get_ivs_status(event):
+    '''
+    Ivs의 방송상태를 가져옵니다.
+    Event Bridge에서 변경되면 Dynamodb에 저장되는 로직입니다.
+    Exception은 Return 500으로 변경해야합니다.
+    '''
     client = boto3.client('ivs')
     cognito_client = boto3.client('cognito-idp')
     table = dynamodb.Table('UsersIntegration')
-    # IVS 방송 상태 확인 로직
-    cognito_response = ''
+
     result = []
     response = table.scan()
     for item in response["Items"]:

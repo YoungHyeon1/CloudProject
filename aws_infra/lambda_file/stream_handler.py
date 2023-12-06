@@ -11,7 +11,10 @@ headers = {
 }
 
 def stream_handler(event, context):
-    # event에서 메시지 데이터 추출
+    '''
+    event에서 path를 가져와서 해당 path에 맞는 함수를 실행합니다.
+    - get_chat: 채팅을 위한 토큰을 생성합니다.
+    '''
     try:
         if event.get('path') == '/stream/get_caht':
             return create_token(event)
@@ -33,7 +36,8 @@ def create_token(event):
     event에서 인증된 Token의 파싱값을 가져옵니다.
     event에서 받은 params에서 채팅의 RoomToken값을 가져옵니다.
     '''
-    print(event)
+
+    # Query Params 를 가져옵니다.
     query_params = event.get('queryStringParameters', {})
     target_chanel = query_params.get('targetChanel', None)
 
@@ -45,6 +49,8 @@ def create_token(event):
         }
 
     result = {}
+
+    #Ivs Client, Dynamodb Client를 생성합니다.
     client = boto3.client('ivschat')
     table = dynamodb.Table('UsersIntegration')
     chanel_name = (
@@ -57,6 +63,8 @@ def create_token(event):
         )
         chat_arn = response['Items'][0]['IvsChatArn']
 
+        # Attribute의 URL은 추후 변경이 필요합니다.
+        # Ivs Client에서 토큰 생성작업입니다.
         chat_response = client.create_chat_token(
             capabilities=['SEND_MESSAGE'],
             roomIdentifier=chat_arn,
@@ -67,7 +75,6 @@ def create_token(event):
                 "avatar": "https://png.pngtree.com/png-vector/20190329/ourlarge/pngtree-vector-avatar-icon-png-image_889567.jpg"
             }
         )
-        print(chat_response)
         result["sessionExpirationTime"] = chat_response["sessionExpirationTime"].isoformat()
         result["tokenExpirationTime"] = chat_response["tokenExpirationTime"].isoformat()
         result["token"] = chat_response["token"]

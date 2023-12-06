@@ -2,13 +2,11 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../AppProvider";
 import * as config from "../../config";
-
 import {
   AuthenticationDetails,
   CognitoUser,
   CognitoUserPool,
 } from "amazon-cognito-identity-js";
-
 import "./Login.css";
 
 const Login = () => {
@@ -23,6 +21,12 @@ const Login = () => {
   const userPool = new CognitoUserPool(poolData);
 
   const handleSubmit = () => {
+    /**
+     * Cognito의 로그인을 위한 인증정보를 생성합니다.
+     * 로그인에 성공하면 SessionStorage 에 Nickname을 저장합니다.
+     * 이후 MainPage로 이동합니다.
+     * auth_login은 Context로 관리됩니다.
+     */
     const authenticationData = {
       Username: email,
       Password: password,
@@ -39,7 +43,7 @@ const Login = () => {
     cognitoUser.authenticateUser(authenticationDetails, {
       onSuccess: (session) => {
         sessionStorage.setItem("nickname", session.idToken.payload.nickname);
-        auth_login();
+        auth_login();  // AppProvider
         navigate("/");
       },
       onFailure: (err) => {
