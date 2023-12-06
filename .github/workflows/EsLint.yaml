@@ -22,7 +22,7 @@ jobs:
 
       - name: Install Dependencies
         run: npm install
-          working-directory: ./stream-web/web-stream
+        working-directory: ./stream-web/web-stream
 
       - name: Run ESLint
         run: npm run lint
