@@ -19,10 +19,10 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: "16.15.0"
-          working-directory: ./stream-web/web-stream
 
       - name: Install Dependencies
         run: npm install
+          working-directory: ./stream-web/web-stream
 
       - name: Run ESLint
         run: npm run lint
