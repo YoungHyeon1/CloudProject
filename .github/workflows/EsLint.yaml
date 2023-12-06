@@ -8,9 +8,9 @@ on:
 
 jobs:
   eslint:
+    if: ${{github.event.pull_request.draft == false}}
     name: Run ESLint
     runs-on: ubuntu-latest
-    if: github.event.pull_request.draft == false
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
