@@ -56,7 +56,7 @@ const VideoPlayer = ({}) => {
             });
             newPlayer.addEventListener(PlayerState.READY, () => {
               console.info('Player State - READY');
-              // newPlayer.play();
+              newPlayer.play();
             });
             newPlayer.addEventListener(PlayerEventType.ERROR, err => {
               console.log('Player Event - ERROR:', err);

@@ -1,8 +1,10 @@
 import json
+import uuid
 import boto3
+import base64
 from boto3.dynamodb.conditions import Key
 from requests_toolbelt.multipart import decoder
-import base64
+
 
 dynamodb = boto3.resource('dynamodb')
 
@@ -26,6 +28,8 @@ def stream_handler(event, context):
             return get_mypage(event)
         elif event.get('path') == '/stream/save_mypage':
             return save_mypage(event)
+        elif event.get('path') == '/stream/broadcase_info_edit':
+            return boradcase_edit(event)
         else:
             return {
                 'statusCode': 404,
@@ -128,7 +132,9 @@ def get_mypage(event):
         )
         user = user_info["Items"][0]
         ivs_info = ivs_client.get_channel(arn=user["IvsArn"])
-        stream_key = ivs_client.list_stream_keys(channelArn=ivs_info["channel"]["arn"])
+        stream_key = ivs_client.list_stream_keys(
+            channelArn=ivs_info["channel"]["arn"]
+        )
         stream_arn = [key['arn'] for key in stream_key['streamKeys']]
         ivs_stream_key = ivs_client.get_stream_key(arn=stream_arn[0])
         result = {
@@ -136,9 +142,12 @@ def get_mypage(event):
             "isLive": user["IsLive"],
             "chanelName": user["SubKey"],
             "streamKey": ivs_stream_key["streamKey"]["value"],
-            "streamUrl": "rtmps://f41ac9ca0fdc.global-contribute.live-video.net:443/app/",
+            "streamUrl": (
+                "rtmps://f41ac9ca0fdc.global"
+                "-contribute.live-video.net:443/app/"
+            ),
             "playbackUrl": ivs_info["channel"]["playbackUrl"],
-            "profileImage": user.get("ProfileImage"),
+            "profile": user.get("profile"),
         }
         return {
             'statusCode': 200,
@@ -146,6 +155,7 @@ def get_mypage(event):
             'body': json.dumps(result)
         }
     except Exception as e:
+        print(e)
         return {
             'statusCode': 500,
             'headers': headers,
@@ -154,7 +164,6 @@ def get_mypage(event):
 
 
 def save_mypage(event):
-
     try:
         s3_client = boto3.client('s3')
         table = dynamodb.Table('UsersIntegration')
@@ -163,15 +172,16 @@ def save_mypage(event):
             event['requestContext']['authorizer']
             ['claims']['custom:chanelName']
         )
+        file_name = str(uuid.uuid4())
         body = base64.b64decode(event['body'])
-        
+
         if 'content-type' in event['headers']:
             content_type = event['headers']['content-type']
         else:
             content_type = event['headers']['Content-Type']
-        
-        decode = decoder.MultipartDecoder(body,content_type)
-        s3_key = f"profile_images/{chanelName}.jpg"
+
+        decode = decoder.MultipartDecoder(body, content_type)
+        s3_key = f"profile_images/{chanelName}/{file_name}.jpg"
 
         for part in decode.parts:
             content = part.content
@@ -187,7 +197,7 @@ def save_mypage(event):
         # 이미지 URL 구성
         image_url = f'https://{s3_bucket_name}.s3.amazonaws.com/{s3_key}'
 
-        test = table.update_item(
+        table.update_item(
             Key={
                 'SubKey': chanelName
             },
@@ -201,9 +211,9 @@ def save_mypage(event):
             'statusCode': 200,
             'headers': {
                 'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*',  # CORS 허용
-                'Access-Control-Allow-Headers': 'Content-Type',  # 허용할 헤더
-                'Access-Control-Allow-Methods': 'GET, POST, OPTIONS'  # 허용할 HTTP 메소드
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': 'GET, POST, OPTIONS'
             },
             'body': json.dumps('이미지 업로드 성공')
         }
@@ -214,3 +224,34 @@ def save_mypage(event):
             'headers': headers,
             'body': json.dumps('Server Error')
         }
+
+
+def boradcase_edit(event):
+    query_params = event.get('queryStringParameters', {})
+    title = query_params.get('title', None)
+    table = dynamodb.Table('UsersIntegration')
+    chanelName = (
+        event['requestContext']['authorizer']
+        ['claims']['custom:chanelName']
+    )
+    if title is None:
+        return {
+            'statusCode': 400,
+            'headers': headers,
+            'body': json.dumps('Invalid request')
+        }
+    table.update_item(
+        Key={
+            'SubKey': chanelName
+        },
+        UpdateExpression='SET BoradCastTitle = :val',
+        ExpressionAttributeValues={
+            ':val': title
+        },
+        ReturnValues='UPDATED_NEW'
+    )
+    return {
+        'statusCode': 200,
+        'headers': headers,
+        'body': json.dumps('OK')
+    }

@@ -26,4 +26,5 @@ jobs:
 
       - name: Run flake8
         run: flake8 ./
+        run: flake8 ./StreamHandler/stream_handler.py
         working-directory: ./aws_infra/lambda_file

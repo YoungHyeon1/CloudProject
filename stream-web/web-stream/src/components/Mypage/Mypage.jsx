@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import './Mypage.css'; // 스타일시트 import
+import './Mypage.css';
 import axios from 'axios';
-import { useAuth } from '../AppProvider';
 import { useNavigate } from 'react-router-dom';
 import { useCognitoToken } from '../useCognitoToken';
 import * as config from '../../config';
@@ -31,6 +30,8 @@ function Mypage() {
             Authorization: idToken,
           },
         });
+        console.log(response.data);
+        setImageSrc(response.data.profile);
         setBroadcastTitle(response.data.boradCastTitle);
         setStreamKey(response.data.streamKey);
         setStreamUrl(response.data.streamUrl);
@@ -63,14 +64,24 @@ function Mypage() {
 
     try {
       const idToken = await useCognitoToken();
-      const response = await axiosApi.post('/stream/save_mypage', formData, {
+      await axiosApi.post('/stream/save_mypage', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Accept: 'image/jpg',
           Authorization: idToken,
         },
       });
-      console.log('업로드 성공:', response.data);
+
+      await axiosApi.get(
+        `/stream/broadcase_info_edit?title=${broadcastTitle}`,
+        {
+          headers: {
+            Authorization: idToken,
+          },
+        }
+      );
+
+      console.log('업로드 성공');
     } catch (error) {
       console.error('업로드 실패:', error);
     }

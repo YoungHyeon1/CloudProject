@@ -1,5 +1,6 @@
 import boto3
 import json
+from boto3.dynamodb.conditions import Key
 
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('ChatMessages')
@@ -32,16 +33,31 @@ def public_stream_handler(event, context):
 
 def get_cognito_users(event):
     client = boto3.client('cognito-idp')
+    table = dynamodb.Table('UsersIntegration')
 
     response = client.list_users(UserPoolId=user_pool_id)
-    exclude_attributes = ['sub', 'email_verified', 'email']
     user_attributes = []
     for user in response['Users']:
+        cognito_data = (
+            {
+                attr['Name']: attr['Value'] for
+                attr in user['Attributes'] if attr['Name']
+            }
+        )
+        user_info = table.query(
+            KeyConditionExpression=Key('SubKey').eq(
+                cognito_data['custom:chanelName']
+            )
+        )
+        print(user_info['Items'])
+        if user_info['Items'] == []:
+            continue
         attributes = {
-            attr['Name'].replace("custom:", "") : attr['Value'] for
-            attr in user['Attributes']
-            if attr['Name'] not in exclude_attributes
+            "nickname": cognito_data["nickname"],
+            "chanelName": cognito_data["custom:chanelName"],
+            "profile": user_info['Items'][0]["profile"],
         }
+
         user_attributes.append(attributes)
     return {
         'statusCode': 200,
@@ -82,6 +98,13 @@ def get_ivs_status(event):
 
                 result_dict["title"] = item["BoradCastTitle"]
                 result_dict["sub_key"] = item["SubKey"]
+                result_dict["thumbnail"] = (
+                    item.get("thumbnail") if item.get("thumbnail")
+                    else (
+                        "https://project-app-prod-silla.s3.amazonaws.com/"
+                        "profile_images/default_img.png"
+                    )
+                )
 
                 if result_dict:
                     result.append(result_dict)
