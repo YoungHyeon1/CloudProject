@@ -10,8 +10,10 @@ variable "accountId" {
 }
 
 resource "aws_api_gateway_rest_api" "stream_api" {
-  name        = "StreamAPI"
-  description = "API for Stream application"
+  name               = "StreamAPI"
+  description        = "API for Stream application"
+  binary_media_types = ["image/png", "image/jpeg", "multipart/form-data"]
+
 }
 
 #/public
@@ -95,7 +97,7 @@ resource "aws_lambda_permission" "api_gw_rest_lambda" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.stream_handler.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn = "arn:aws:execute-api:${var.myregion}:${var.accountId}:${aws_api_gateway_rest_api.stream_api.id}/*/${aws_api_gateway_method.stream_get_method.http_method}${aws_api_gateway_resource.stream_resource.path}"
+  source_arn    = "arn:aws:execute-api:${var.myregion}:${var.accountId}:${aws_api_gateway_rest_api.stream_api.id}/*/${aws_api_gateway_method.stream_get_method.http_method}${aws_api_gateway_resource.stream_resource.path}"
 }
 
 resource "aws_lambda_permission" "api_gw_rest_lambda_public" {
@@ -103,17 +105,17 @@ resource "aws_lambda_permission" "api_gw_rest_lambda_public" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.public_stream_handler.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn = "arn:aws:execute-api:${var.myregion}:${var.accountId}:${aws_api_gateway_rest_api.stream_api.id}/*/${aws_api_gateway_method.public_stream_get_method.http_method}${aws_api_gateway_resource.public_stream_resource.path}"
+  source_arn    = "arn:aws:execute-api:${var.myregion}:${var.accountId}:${aws_api_gateway_rest_api.stream_api.id}/*/${aws_api_gateway_method.public_stream_get_method.http_method}${aws_api_gateway_resource.public_stream_resource.path}"
 }
 
 resource "aws_lambda_function" "stream_handler" {
-  filename      = "lambda_file/stream_handler.zip"
+  filename      = "lambda_file/StreamHandler.zip"
   function_name = "StreamHandler"
   role          = aws_iam_role.stream_role.arn
   handler       = "stream_handler.stream_handler"
   runtime       = "python3.8"
 
-  source_code_hash = filebase64sha256("lambda_file/stream_handler.zip")
+  source_code_hash = filebase64sha256("lambda_file/StreamHandler.zip")
 }
 
 # IAM
@@ -151,13 +153,19 @@ data "aws_iam_policy_document" "stream_policy_document" {
       "dynamodb:Query",
       "dynamodb:Scan",
       "dynamodb:DeleteItem",
-      "ivschat:CreateChatToken"
+      "ivschat:CreateChatToken",
+      "ivs:GetStreamKey",
+      "ivs:GetStream",
+      "ivs:ListStreamKeys",
+      "s3:PutObject",
     ]
 
     resources = [
       "*",
+      "arn:aws:ivs:ap-northeast-2:${var.accountId}:stream-key/*",
       "arn:aws:ivs:ap-northeast-2:${var.accountId}:channel/*",
       "arn:aws:ivschat:ap-northeast-2:${var.accountId}:room/*",
+      aws_s3_bucket.s3_app.arn,
       aws_dynamodb_table.cognito_ivs_integration.arn
     ]
   }

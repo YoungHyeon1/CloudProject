@@ -7,9 +7,9 @@ on:
       - feature/*
 jobs:
   flake8:
-    if: ${{github.event.pull_request.draft == false}}
     name: Lint with flake8
     runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2

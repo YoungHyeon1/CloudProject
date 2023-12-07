@@ -1,35 +1,92 @@
-import React, { useState } from "react";
-import "./Mypage.css"; // 스타일시트 import
-import { useAuth } from "../AppProvider";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import './Mypage.css'; // 스타일시트 import
+import axios from 'axios';
+import { useAuth } from '../AppProvider';
+import { useNavigate } from 'react-router-dom';
+import { useCognitoToken } from '../useCognitoToken';
+import * as config from '../../config';
 
 function Mypage() {
-  const [broadcastTitle, setBroadcastTitle] = useState("");
-  const [profileImage, setProfileImage] = useState("");
-  const [personalInfo, setPersonalInfo] = useState("");
-  const { logout } = useAuth();
+  const [broadcastTitle, setBroadcastTitle] = useState('');
+  const [streamKey, setStreamKey] = useState('');
+  const [streamUrl, setStreamUrl] = useState('');
+  const [imageSrc, setImageSrc] = useState(null);
+  const [file, setFile] = useState(null);
+
   const navigate = useNavigate();
 
-  const handleBroadcastTitleChange = (e) => {
+  const axiosApi = axios.create({
+    baseURL: config.ApiUrl,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  useEffect(() => {
+    const myinfo = async () => {
+      try {
+        const idToken = await useCognitoToken();
+        const response = await axiosApi.get(`/stream/mypage`, {
+          headers: {
+            Authorization: idToken,
+          },
+        });
+        setBroadcastTitle(response.data.boradCastTitle);
+        setStreamKey(response.data.streamKey);
+        setStreamUrl(response.data.streamUrl);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    myinfo();
+  }, []);
+
+  const handleFileChange = event => {
+    const file = event.target.files[0];
+    setFile(file);
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      setImageSrc(reader.result);
+    };
+  };
+
+  const handleUpload = async () => {
+    if (!file) {
+      alert('파일을 선택해주세요.');
+      return;
+    }
+
+    // 이미지를 S3에 업로드하고 DynamoDB에 URL을 저장하는 Lambda 함수 호출
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const idToken = await useCognitoToken();
+      const response = await axiosApi.post('/stream/save_mypage', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Accept: 'image/jpg',
+          Authorization: idToken,
+        },
+      });
+      console.log('업로드 성공:', response.data);
+    } catch (error) {
+      console.error('업로드 실패:', error);
+    }
+  };
+  const handleBroadcastTitleChange = e => {
     setBroadcastTitle(e.target.value);
   };
 
-  const handleProfileImageChange = (e) => {
-    // 프로필 사진 변경 로직
-  };
-
-  const handlePersonalInfoChange = (e) => {
-    setPersonalInfo(e.target.value);
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault();
     // 설정 저장 로직
   };
 
-  const handleSingout = (e) => {
+  const handleSingout = e => {
     logout();
-    navigate("/");
+    navigate('/');
   };
 
   return (
@@ -45,14 +102,31 @@ function Mypage() {
           />
         </div>
         <div className="form-group">
-          <label>프로필 사진</label>
-          <input type="file" onChange={handleProfileImageChange} />
+          <label>Stream KEY</label>
+          <input
+            disabled
+            type="text"
+            value={streamKey}
+            onChange={handleBroadcastTitleChange}
+          />
         </div>
         <div className="form-group">
-          <label>개인 정보</label>
-          <textarea value={personalInfo} onChange={handlePersonalInfoChange} />
+          <label>Stream URL</label>
+          <input
+            disabled
+            type="text"
+            value={streamUrl}
+            onChange={handleBroadcastTitleChange}
+          />
         </div>
-        <button type="submit">저장</button>
+        <div className="form-group">
+          <label>프로필 사진</label>
+          <img width={'30%'} height={'30%'} src={imageSrc}></img>
+          <input type="file" onChange={handleFileChange} />
+        </div>
+        <button type="submit" onClick={handleUpload}>
+          저장
+        </button>
         <button type="submit" onClick={handleSingout}>
           로그아웃
         </button>
