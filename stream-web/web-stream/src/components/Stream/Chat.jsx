@@ -4,6 +4,8 @@
 import React, { useEffect, useState, useRef, createRef } from 'react';
 import Linkify from 'linkify-react';
 import axios from 'axios';
+import { useAuth } from '../AppProvider';
+
 import {
   ChatRoom,
   DeleteMessageRequest,
@@ -11,7 +13,6 @@ import {
   SendMessageRequest,
 } from 'amazon-ivs-chat-messaging';
 import { useParams } from 'react-router-dom';
-import { CognitoUserPool } from 'amazon-cognito-identity-js';
 import * as config from '../../config';
 
 // Components
@@ -19,9 +20,10 @@ import VideoPlayer from './LiveStreamPage';
 
 // Styles
 import './Chat.css';
+import { useCognitoToken } from '../useCognitoToken';
 
 const Chat = () => {
-  const [username, setUsername] = useState('');
+  const { isLogin } = useAuth();
   const [moderator, setModerator] = useState(false);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
@@ -33,10 +35,6 @@ const Chat = () => {
   const { id } = useParams();
   const chatRef = createRef();
   const messagesEndRef = createRef();
-  const userPool = new CognitoUserPool({
-    UserPoolId: config.UserPoolId,
-    ClientId: config.ClientId,
-  });
 
   const axiosApi = axios.create({
     baseURL: config.ApiUrl,
@@ -55,7 +53,7 @@ const Chat = () => {
       sessionExpirationTime: Date,
       tokenExpirationTime: Date
     */
-    const idToken = await getCurrentUserToken();
+    const idToken = await useCognitoToken();
     var token;
     try {
       const response = await axiosApi.get(
@@ -77,32 +75,6 @@ const Chat = () => {
       console.log('Error:', error);
     }
   };
-
-  function getCurrentUserToken() {
-    /* 
-     Cognito SDK에 저장된 로그인 정보로 Token을 가져옵니다.
-     가져온 Token에서 Nickname은 로그인 정공 여부로 작성되어 추후 수정이 필요할 것 같습니다.
-      return :
-        accessIdToken: Token
-    */
-    return new Promise((resolve, reject) => {
-      // Cognito Pool에서 로그인 정보를 가져옵니다.
-      const currentUser = userPool.getCurrentUser();
-      if (currentUser) {
-        currentUser.getSession((err, session) => {
-          if (err) {
-            reject(err);
-          } else {
-            const accessToken = session.getIdToken().getJwtToken();
-            setUsername(session.idToken.payload.nickname);
-            resolve(accessToken);
-          }
-        });
-      } else {
-        reject(new Error('No current user'));
-      }
-    });
-  }
 
   const handleGetToken = () => {
     /*
@@ -212,6 +184,7 @@ const Chat = () => {
       unsubscribeOnMessageReceived();
       unsubscribeOnEventReceived();
       unsubscribeOnMessageDeleted();
+      chatRoom.disconnect();
     };
   }, [chatRoom]);
 
@@ -522,7 +495,7 @@ const Chat = () => {
      * Props의 Key 값은 message.id 로 설정되어 있습니다.
      */
     return (
-      <div className="chat-line-wrapper" key={message.id}>
+      <div className="chat-line-wrapper" key={message.timestamp}>
         <div className="chat-line">
           <img
             className="chat-line-img"
@@ -624,7 +597,7 @@ const Chat = () => {
               <div className="composer fl fl-j-center">
                 <input
                   ref={chatRef}
-                  className={`rounded mg-r-1 ${!username ? 'hidden' : ''}`}
+                  className={`rounded mg-r-1 ${!isLogin ? 'hidden' : ''}`}
                   type="text"
                   placeholder={
                     isChatConnected()
@@ -637,7 +610,7 @@ const Chat = () => {
                   onInput={handleChange}
                   onKeyPress={handleKeyPress}
                 />
-                {!username && (
+                {!isLogin && (
                   <fieldset>
                     <button
                       onClick={handleOnClick}

@@ -15,25 +15,22 @@ const userPool = new CognitoUserPool({
   ClientId: config.ClientId,
 });
 
-const refreshSession = (username, refreshTokenString, nickname) => {
+const refreshSession = (username, refreshTokenString) => {
   const userData = {
     Username: username,
     Pool: userPool,
   };
-
   const cognitoUser = new CognitoUser(userData);
-
   // 문자열 형태의 리프레시 토큰을 CognitoRefreshToken 객체로 변환
   const refreshToken = new CognitoRefreshToken({
     RefreshToken: refreshTokenString,
   });
-
   cognitoUser.refreshSession(refreshToken, (err, session) => {
     if (err) {
       console.error(err);
+      setIsLogin(false);
       return;
     }
-    sessionStorage.setItem('nickname', nickname);
   });
 };
 
@@ -42,41 +39,37 @@ const logoutSession = username => {
     Username: username,
     Pool: userPool,
   };
-
   const cognitoUser = new CognitoUser(userData);
-
   cognitoUser.signOut();
 };
 
 export const AppProvider = ({ children }) => {
+  const [isLogin, setIsLogin] = useState(false);
+
   useEffect(() => {
     if (userPool.getCurrentUser()) {
       userPool.getCurrentUser().getSession((err, session) => {
         if (err) {
-          console.log(err);
           setIsLogin(false);
         } else {
           refreshSession(
             session.accessToken.payload.username,
-            session.refreshToken.token,
-            session.idToken.payload.nickname
+            session.refreshToken.token
           );
+          sessionStorage.setItem('nickname', session.idToken.payload.nickname);
           setIsLogin(true);
         }
       });
-      setIsLogin(true);
     }
   }, []);
-  const [isLogin, setIsLogin] = useState(false);
 
-  const auth_login = session => {
+  const auth_login = () => {
     setIsLogin(true);
   };
 
   const logout = () => {
     setIsLogin(false);
     logoutSession(userPool.getCurrentUser().getUsername());
-    // userPool.getCurrentUser().signOut();
   };
 
   return (

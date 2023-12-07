@@ -1,5 +1,6 @@
 import boto3
 import json
+from boto3.dynamodb.conditions import Key
 
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('ChatMessages')
@@ -15,11 +16,7 @@ header = {
 
 
 def public_stream_handler(event, context):
-    '''
-    event에서 path를 가져와서 해당 path에 맞는 함수를 실행합니다.
-    - get_cognito_users: Cognito에 가입된 유저들의 정보를 가져옵니다.
-    - get_ivs_status: IVS 방송 상태를 가져옵니다.
-    '''
+    # event에서 메시지 데이터 추출
     try:
         if event.get('path') == '/public/users':
             return get_cognito_users(event)
@@ -35,22 +32,32 @@ def public_stream_handler(event, context):
 
 
 def get_cognito_users(event):
-    '''
-    Cognito의 유저를 가져옵니다.
-    - params: event
-    - return: Nickname, ChanelName
-    '''
     client = boto3.client('cognito-idp')
+    table = dynamodb.Table('UsersIntegration')
 
     response = client.list_users(UserPoolId=user_pool_id)
-    exclude_attributes = ['sub', 'email_verified', 'email']
     user_attributes = []
     for user in response['Users']:
+        cognito_data = (
+            {
+                attr['Name']: attr['Value'] for
+                attr in user['Attributes'] if attr['Name']
+            }
+        )
+        user_info = table.query(
+            KeyConditionExpression=Key('SubKey').eq(
+                cognito_data['custom:chanelName']
+            )
+        )
+        print(user_info['Items'])
+        if user_info['Items'] == []:
+            continue
         attributes = {
-            attr['Name']: attr['Value'] for
-            attr in user['Attributes']
-            if attr['Name'] not in exclude_attributes
+            "nickname": cognito_data["nickname"],
+            "chanelName": cognito_data["custom:chanelName"],
+            "profile": user_info['Items'][0]["profile"],
         }
+
         user_attributes.append(attributes)
     return {
         'statusCode': 200,
@@ -60,15 +67,11 @@ def get_cognito_users(event):
 
 
 def get_ivs_status(event):
-    '''
-    Ivs의 방송상태를 가져옵니다.
-    Event Bridge에서 변경되면 Dynamodb에 저장되는 로직입니다.
-    Exception은 Return 500으로 변경해야합니다.
-    '''
     client = boto3.client('ivs')
     cognito_client = boto3.client('cognito-idp')
     table = dynamodb.Table('UsersIntegration')
-
+    # IVS 방송 상태 확인 로직
+    cognito_response = ''
     result = []
     response = table.scan()
     for item in response["Items"]:
@@ -95,6 +98,13 @@ def get_ivs_status(event):
 
                 result_dict["title"] = item["BoradCastTitle"]
                 result_dict["sub_key"] = item["SubKey"]
+                result_dict["thumbnail"] = (
+                    item.get("thumbnail") if item.get("thumbnail")
+                    else (
+                        "https://project-app-prod-silla.s3.amazonaws.com/"
+                        "profile_images/default_img.png"
+                    )
+                )
 
                 if result_dict:
                     result.append(result_dict)

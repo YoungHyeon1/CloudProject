@@ -59,7 +59,11 @@ def create_room_handler(event, context):
         "email": event["request"]["userAttributes"]["email"],
         "IvsChatArn": response_chat["arn"],
         "BoradCastTitle": "Input Title",
-        "IsLive": "false"
+        "IsLive": "false",
+        "profile": (
+            "https://project-app-prod-silla.s3.amazonaws.com/"
+            "profile_images/default_profile.png"
+        )
     }
 
     table = dynamodb.Table('UsersIntegration')
