@@ -55,15 +55,18 @@ const Chat = () => {
     */
     const idToken = await useCognitoToken();
     var token;
+    let response = null;
     try {
-      const response = await axiosApi.get(
-        `/stream/get_caht?targetChanel=${id}`,
-        {
+      console.log('isLogin', isLogin);
+      if (isLogin) {
+        response = await axiosApi.get(`/stream/get_caht?targetChanel=${id}`, {
           headers: {
             Authorization: idToken,
           },
-        }
-      );
+        });
+      } else {
+        response = await axiosApi.get(`/public/get_chat?targetChanel=${id}`);
+      }
       token = {
         token: response.data.token,
         sessionExpirationTime: new Date(response.data.sessionExpirationTime),
