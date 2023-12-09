@@ -1,7 +1,10 @@
 /* IndexPage.css */
+body {
+  background-color: #131313;
+  color: white;
+}
 
 .index-container {
-    background-color: #131313;
     height: 100%; /* Use full height */
   }
   
