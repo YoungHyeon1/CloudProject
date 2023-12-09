@@ -34,7 +34,6 @@ const Main = () => {
       {/* {Request한 API에서 방송의 개수를 확인해 UI에 다르게 표시합니다.} */}
       {streams && streams.length > 0 ? (
         <div className="stream-list">
-          {console.log(streams)}
           {streams.map(stream => (
             <div
               onClick={() => streamCardHandler(stream.sub_key)}
