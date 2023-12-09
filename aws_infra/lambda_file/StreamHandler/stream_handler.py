@@ -132,9 +132,7 @@ def get_mypage(event):
         )
         user = user_info["Items"][0]
         ivs_info = ivs_client.get_channel(arn=user["IvsArn"])
-        stream_key = ivs_client.list_stream_keys(
-            channelArn=ivs_info["channel"]["arn"]
-        )
+        stream_key = ivs_client.list_stream_keys(channelArn=ivs_info["channel"]["arn"])
         stream_arn = [key['arn'] for key in stream_key['streamKeys']]
         ivs_stream_key = ivs_client.get_stream_key(arn=stream_arn[0])
         result = {
@@ -142,10 +140,7 @@ def get_mypage(event):
             "isLive": user["IsLive"],
             "chanelName": user["SubKey"],
             "streamKey": ivs_stream_key["streamKey"]["value"],
-            "streamUrl": (
-                "rtmps://f41ac9ca0fdc.global"
-                "-contribute.live-video.net:443/app/"
-            ),
+            "streamUrl": "rtmps://f41ac9ca0fdc.global-contribute.live-video.net:443/app/",
             "playbackUrl": ivs_info["channel"]["playbackUrl"],
             "profile": user.get("profile"),
         }
@@ -155,7 +150,6 @@ def get_mypage(event):
             'body': json.dumps(result)
         }
     except Exception as e:
-        print(e)
         return {
             'statusCode': 500,
             'headers': headers,
@@ -174,13 +168,13 @@ def save_mypage(event):
         )
         file_name = str(uuid.uuid4())
         body = base64.b64decode(event['body'])
-
+        
         if 'content-type' in event['headers']:
             content_type = event['headers']['content-type']
         else:
             content_type = event['headers']['Content-Type']
-
-        decode = decoder.MultipartDecoder(body, content_type)
+        
+        decode = decoder.MultipartDecoder(body,content_type)
         s3_key = f"profile_images/{chanelName}/{file_name}.jpg"
 
         for part in decode.parts:
@@ -211,9 +205,9 @@ def save_mypage(event):
             'statusCode': 200,
             'headers': {
                 'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Headers': 'Content-Type',
-                'Access-Control-Allow-Methods': 'GET, POST, OPTIONS'
+                'Access-Control-Allow-Origin': '*',  # CORS 허용
+                'Access-Control-Allow-Headers': 'Content-Type',  # 허용할 헤더
+                'Access-Control-Allow-Methods': 'GET, POST, OPTIONS'  # 허용할 HTTP 메소드
             },
             'body': json.dumps('이미지 업로드 성공')
         }
@@ -250,7 +244,7 @@ def boradcase_edit(event):
         },
         ReturnValues='UPDATED_NEW'
     )
-    return {
+    return{
         'statusCode': 200,
         'headers': headers,
         'body': json.dumps('OK')

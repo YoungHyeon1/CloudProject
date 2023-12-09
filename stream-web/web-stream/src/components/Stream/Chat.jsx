@@ -583,11 +583,7 @@ const Chat = () => {
     <>
       <div className="main full-width full-height chat-container">
         <div className="content-wrapper mg-2">
-          <VideoPlayer
-            playbackUrl={
-              'https://3d26876b73d7.us-west-2.playback.live-video.net/api/video/v1/us-west-2.913157848533.channel.rkCBS9iD1eyd.m3u8'
-            }
-          />
+          <VideoPlayer id={id} />
           <div className="col-wrapper">
             <div className="chat-wrapper">
               <div className="messages">
@@ -600,9 +596,7 @@ const Chat = () => {
                   className={`rounded mg-r-1 ${!isLogin ? 'hidden' : ''}`}
                   type="text"
                   placeholder={
-                    isChatConnected()
-                      ? '메시지 보내기'
-                      : '채팅 연결 중...'
+                    isChatConnected() ? '메시지 보내기' : '채팅 연결 중...'
                   }
                   value={message}
                   maxLength={500}

@@ -52,13 +52,10 @@ export const AppProvider = ({ children }) => {
         if (err) {
           setIsLogin(false);
         } else {
-          let channelName = session.idToken.payload["custom:chanelName"];
           refreshSession(
             session.accessToken.payload.username,
             session.refreshToken.token
           );
-          console.log(session.idToken.payload);
-          sessionStorage.setItem('chanelName', channelName);
           sessionStorage.setItem('nickname', session.idToken.payload.nickname);
           setIsLogin(true);
         }
