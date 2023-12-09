@@ -567,7 +567,7 @@ const Chat = () => {
       username: '',
       userId: '',
       avatar: '',
-      message: `채팅방에 오신 것을 환영합니다!`,
+      message: `채팅방에 연결되었습니다!`,
     };
     setMessages(prevState => {
       return [...prevState, status];

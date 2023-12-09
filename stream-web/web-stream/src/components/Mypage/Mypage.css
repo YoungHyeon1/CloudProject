@@ -37,17 +37,65 @@ body {
     display: block;
 }
 
-button {
+.save, .logout {
     display: block;
     width: 0 1em;
     padding: 10px;
-    background-color: #9147ff;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
 }
 
-button:hover {
-    background-color: #772ce8;
+.form-box {
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    padding: 20px;
+    padding-right: 40px;
+    margin: auto;
+}
+
+.form-group img {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    display: block;
+}
+
+.input-img {
+    position: absolute;
+    display: inline-block;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #333;
+    border-radius: 8px;
+    padding: 20px;
+    margin-left: 170px;
+    margin-top: -95px;
+    color: #bbb;
+    font-size: 0.9em;
+}
+
+.save {
+    background-color: #9464db;
+    margin-top: 40px;
+    padding: 15px 40px 15px 40px;
+    font-size: 15px;
+}
+
+.save:hover {
+    transition: 0.3s;
+    background-color: #792fe9;
+}
+
+.logout {
+    background-color: rgb(207, 77, 77);
+    margin-top: 15px;
+    padding: 15px 25px 15px 25px;
+    font-size: 15px;
+}
+
+.logout:hover {
+    transition: 0.3s;
+    background-color: rgb(185, 33, 33);
 }

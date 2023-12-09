@@ -12,6 +12,7 @@
 }
 
 .main {
+  color: white;
   height: calc(100vh - var(--header-height));
 }
 
@@ -171,25 +172,26 @@
 
 /* Chat */
 .chat-wrapper {
+  background-color: rgb(61, 61, 61);
   position: absolute;
   top: 0;
-  bottom: 0;
   left: 0;
   right: 0;
+  bottom: 0;
   padding-bottom: calc(var(--input-height) + 3rem);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  margin-left: 5px;
+  overflow: hidden;
 }
 
 .chat-wrapper .messages {
-  height: 100%;
-  width: 100%;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 1rem 1.5rem;
+  padding-left: 5px;
 }
 
 .composer button.btn {
@@ -216,24 +218,25 @@
   background: var(--color-bg-positive);
   border-radius: var(--input-height);
   display: flex;
-  margin: 0 0 5px 0;
+  margin-bottom: -20px;
 }
 
 .success-line p {
   font-size: 1.2rem;
   display: inline;
   font-weight: bold;
-  color: black;
+  color: rgb(161, 161, 161);
 }
 
 .chat-line {
   flex-grow: 1;
-  padding: 1.2rem 1.6rem 1.2rem 1.2rem;
+  padding-left: 10px;
+  padding-top: 25px;
   background: var(--color-bg-chat-bubble);
   border-radius: 2.4rem;
   display: flex;
   align-items: center;
-  margin: 0 0.5rem 0.5rem 0;
+  margin-top: -25px;
 }
 
 .chat-line p {
@@ -327,7 +330,17 @@
 }
 
 .composer input {
+  background-color: rgb(61,61,61);
+  color: white;
+  flex: 1;
   width: 100%;
+  border: 2px solid white;
+  border-radius: 10px;
+  padding: 15px;
+  font-size: 14px;
+  overflow-y: auto;
+  margin-left: -15px;
+  margin-bottom: -5px;
 }
 
 .chat-sticker {
@@ -486,4 +499,16 @@ button.item-container {
   100% {
     transform: scale3d(1, 1, 1);
   }
+}
+
+.btn {
+  background-color: rgb(211, 77, 77);
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-top: 3px;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
