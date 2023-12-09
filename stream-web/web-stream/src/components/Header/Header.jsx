@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../AppProvider';
 import './Header.css';
 
 const Header = () => {
   const { isLogin, profileImg } = useAuth();
-  const channelCode = sessionStorage.getItem('chanelName');
 
   return (
     <header className="site-header">
