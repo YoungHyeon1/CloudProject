@@ -70,7 +70,6 @@ const VideoPlayer = ({ id }) => {
 
           if (newPlayer) {
             // 스트림 URL 로드
-            console.log(playback);
             newPlayer.load(playback);
             newPlayer.addEventListener(PlayerState.PLAYING, () => {
               console.info('Player State - PLAYING');

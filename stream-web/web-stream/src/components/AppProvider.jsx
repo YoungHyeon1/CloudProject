@@ -56,7 +56,8 @@ export const AppProvider = ({ children }) => {
             session.accessToken.payload.username,
             session.refreshToken.token
           );
-          sessionStorage.setItem('nickname', session.idToken.payload.nickname);
+          const playload = session.idToken.payload;
+          sessionStorage.setItem('chanelName', playload['custom:chanelName']);
           setIsLogin(true);
         }
       });
@@ -69,6 +70,7 @@ export const AppProvider = ({ children }) => {
 
   const logout = () => {
     setIsLogin(false);
+    sessionStorage.removeItem('chanelName');
     logoutSession(userPool.getCurrentUser().getUsername());
   };
 
