@@ -33,7 +33,6 @@ function Mypage() {
             Authorization: idToken,
           },
         });
-        console.log(response.data);
         setImageSrc(response.data.profile);
         setBroadcastTitle(response.data.boradCastTitle);
         setStreamKey(response.data.streamKey);
@@ -108,48 +107,60 @@ function Mypage() {
       <h1>프로필 설정</h1>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label><h2>프로필 사진</h2></label>
-          <div className='form-box'>
-          <img width={'30%'} height={'30%'} src={imageSrc}/>
-          <input type="file" onChange={handleFileChange} className='input-img'/>
+          <label>
+            <h2>프로필 사진</h2>
+          </label>
+          <div className="form-box">
+            <img width={'30%'} height={'30%'} src={imageSrc} />
+            <input
+              type="file"
+              onChange={handleFileChange}
+              className="input-img"
+            />
           </div>
         </div>
         <div className="form-group">
-          <label><h2>방송 제목</h2></label>
-          <div className='form-box'>
-          <input
-            type="text"
-            value={broadcastTitle}
-            onChange={handleBroadcastTitleChange}
-          />
+          <label>
+            <h2>방송 제목</h2>
+          </label>
+          <div className="form-box">
+            <input
+              type="text"
+              value={broadcastTitle}
+              onChange={handleBroadcastTitleChange}
+            />
           </div>
         </div>
         <div className="form-group">
-          <label><h2>Stream KEY</h2></label>
-          <div className='form-box'>
-          <input
-            disabled
-            type="text"
-            value={streamKey}
-            onChange={handleBroadcastTitleChange}
-          />
+          <label>
+            <h2>Stream KEY</h2>
+          </label>
+          <div className="form-box">
+            <input
+              disabled
+              type="text"
+              value={streamKey}
+              onChange={handleBroadcastTitleChange}
+            />
           </div>
         </div>
         <div className="form-group">
-          <label><h2>Stream URL</h2></label>
-          <div className='form-box'>
-          <input
-            disabled
-            type="text"
-            value={streamUrl}
-            onChange={handleBroadcastTitleChange}
-          />
+          <label>
+            <h2>Stream URL</h2>
+          </label>
+          <div className="form-box">
+            <input
+              disabled
+              type="text"
+              value={streamUrl}
+              onChange={handleBroadcastTitleChange}
+            />
           </div>
         </div>
-        <button type="submit" onClick={handleUpload} className='save'>
+        <button type="submit" onClick={handleUpload} className="save">
           저장
         </button>
-        <button type="submit" onClick={handleSingout} className='logout'>
+        <button type="submit" onClick={handleSingout} className="logout">
           로그아웃
         </button>
       </form>

@@ -25,7 +25,7 @@ const Main = () => {
   };
 
   if (isLoading) {
-    return <div className='loading'>로딩 중...</div>;
+    return <div className="loading">로딩 중...</div>;
   }
 
   return (
