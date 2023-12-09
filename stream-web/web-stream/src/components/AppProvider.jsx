@@ -64,8 +64,6 @@ export const AppProvider = ({ children }) => {
         .then(res => {
           setProfileImg(res.data.profile);
         });
-      console.log('profileImg:', profileImg);
-      // setProfileImg(response.data.profile);
     } catch (error) {
       console.log('Error:', error);
     }
