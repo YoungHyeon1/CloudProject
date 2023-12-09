@@ -1,29 +1,46 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import { useAuth } from "../AppProvider";
 import "./Header.css";
-
+import axios from 'axios';
 
 const Header = () => {
-  /**
-   * 로그인이 되었는지는 AppProvider 의 Props입니다.
-   * isLogin은 boolean 입니다.
-   */
   const { isLogin } = useAuth();
+  const currentNickname = sessionStorage.getItem("chanelName");
+  const [profileImg, setProfileImg] = useState("");
+
+  useEffect(() => {
+    if (isLogin && currentNickname) {
+      axios.get('https://xw6vimxva3.execute-api.ap-northeast-2.amazonaws.com/develop/public/users', {
+        params: {
+          getProfile: currentNickname
+        }
+      })
+      .then(response => {
+        const userProfile = response.data;
+        if (userProfile) {
+          setProfileImg(userProfile.profile);
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      });
+    }
+  }, [isLogin, currentNickname]);
 
   return (
     <header className="site-header">
       <Link to="/" className="logo">
-        <img src="/images/Mainlogo.png" className="mainlogo"></img>
-        CLOUMER
+        <img src="/images/Mainlogo.png" alt="Main Logo" className="mainlogo" />
       </Link>
       <nav className="main-nav">
-        <Link to="/">Home</Link>
-        <Link to="/about">About</Link>
+        <a href="https://github.com/YoungHyeon1/CloudProject" className="profile">Github</a>
         {isLogin ? (
-          <Link to="/mypage">{sessionStorage.getItem("nickname")}</Link>
+          <Link to="/mypage">
+            <img src={profileImg} className='profileImg' />
+          </Link>
         ) : (
-          <Link to="/login">로그인</Link>
+          <Link to="/login" className="loginbtn">로그인</Link>
         )}
       </nav>
     </header>

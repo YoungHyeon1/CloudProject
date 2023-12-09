@@ -25,12 +25,12 @@ const Main = () => {
   };
 
   if (isLoading) {
-    return <div>Loadings</div>;
+    return <div className='loading'>로딩 중...</div>;
   }
 
   return (
     <div className="index-container">
-      <h1 className="index-title">On Air</h1>
+      <h1 className="index-title">실시간</h1>
       {/* {Request한 API에서 방송의 개수를 확인해 UI에 다르게 표시합니다.} */}
       {streams && streams.length > 0 ? (
         <div className="stream-list">
@@ -51,7 +51,7 @@ const Main = () => {
       ) : (
         <div className="empty-stream-list">
           <div className="empty-stream-box"></div>
-          <p>No streams available</p>
+          <p>방송 중인 채널이 없습니다</p>
         </div>
       )}
     </div>

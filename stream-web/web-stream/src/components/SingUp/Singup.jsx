@@ -117,7 +117,7 @@ const Singup = ({ is_login }) => {
         />
       </div>
       <div className="input-group">
-        <label htmlFor="password">Password</label>
+        <label htmlFor="password">비밀번호</label>
         <input
           type="password"
           value={password}

@@ -1,13 +1,15 @@
 /* MyProfile.css */
+
 .profile-container {
     max-width: 600px;
     padding: 20px;
     border-radius: 8px;
 }
 
-.profile-container h2 {
-    color: #9147ff; /* Twitch 메인 컬러 */
-    text-align: center;
+.profile-container h1 {
+    color: #c5a5ff; /* Twitch 메인 컬러 */
+    padding: 10px;
+    margin-top: -10px;
 }
 
 .form-group {
@@ -31,17 +33,65 @@
     display: block;
 }
 
-button {
+.save, .logout {
     display: block;
-    width: 100%;
+    width: 0 1em;
     padding: 10px;
-    background-color: #9147ff;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
 }
 
-button:hover {
-    background-color: #772ce8;
+.form-box {
+    background-color: #1e1e1e;
+    border-radius: 10px;
+    padding: 20px;
+    padding-right: 40px;
+    margin: auto;
+}
+
+.form-group img {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    display: block;
+}
+
+.input-img {
+    position: absolute;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #333;
+    border-radius: 8px;
+    padding: 20px;
+    margin-left: 170px;
+    margin-top: -95px;
+    color: #bbb;
+    font-size: 0.9em;
+}
+
+.save {
+    background-color: #9464db;
+    margin-top: 40px;
+    padding: 15px 40px 15px 40px;
+    font-size: 15px;
+}
+
+.save:hover {
+    transition: 0.3s;
+    background-color: #792fe9;
+}
+
+.logout {
+    background-color: rgb(207, 77, 77);
+    padding: 15px 25px 15px 25px;
+    font-size: 15px;
+    margin-top: -50px;
+    margin-left: 130px;
+}
+
+.logout:hover {
+    transition: 0.3s;
+    background-color: rgb(185, 33, 33);
 }
