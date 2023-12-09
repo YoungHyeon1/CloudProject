@@ -1,13 +1,15 @@
 /* IndexPage.css */
+
 .index-container {
-    padding: 20px;
-    background-color: #f7f7f8;
+    background-color: #131313;
     height: 100%; /* Use full height */
+    margin: -40px -30px 0px -20px;
   }
   
   .index-title {
     text-align: center;
-    color: #6441a5;
+    color: #c5a5ff;
+    padding-top: 40px;
   }
   
   .stream-list {
@@ -16,6 +18,7 @@
     gap: 20px;
     justify-content: center;
     padding-top: 20px;
+    color: white;
   }
   
   .stream {
@@ -46,8 +49,12 @@
     width: 200px;
     height: 150px;
     background-color: #ccc;
-    border-radius: 8px;
   }
   
+  .loading {
+    font-size: 20px;
+    color: white;
+  }
+
   /* Add any additional styles for typography, layout, etc. */
   

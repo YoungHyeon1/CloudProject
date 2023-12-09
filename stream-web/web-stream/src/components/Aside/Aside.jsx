@@ -26,11 +26,14 @@ function Aside() {
     <aside className="aside">
       <nav>
         <div className="users-list">
-          <h2>추천 채널</h2>
+          <div className="recomm-chanel">
+            <h2>추천 채널</h2>
+          </div>
           <ul>
             {userList.map(user => (
-              <li key={user.nickname}>
-                <a href={`/user/${user.nickname}`}>{user.nickname}</a>
+              <li key={user.chanelName}>
+                <img src={user.profile} className='prof-img'></img>
+                <a href={`/channel/${user.chanelName}`} className='prof-name'>{user.nickname}</a>
               </li>
             ))}
           </ul>

@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useCognitoToken } from '../useCognitoToken';
 import * as config from '../../config';
+import { useAuth } from '../AppProvider';
 
 function Mypage() {
   const [broadcastTitle, setBroadcastTitle] = useState('');
@@ -13,6 +14,8 @@ function Mypage() {
   const [file, setFile] = useState(null);
 
   const navigate = useNavigate();
+
+  const { logout } = useAuth();
 
   const axiosApi = axios.create({
     baseURL: config.ApiUrl,
@@ -102,10 +105,15 @@ function Mypage() {
 
   return (
     <div className="profile-container">
-      <h2>프로필 설정</h2>
+      <h1>프로필 설정</h1>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>방송 제목</label>
+          <label><h2>프로필 사진</h2></label>
+          <img width={'30%'} height={'30%'} src={imageSrc}/>
+          <input type="file" onChange={handleFileChange} />
+        </div>
+        <div className="form-group">
+          <label><h2>방송 제목</h2></label>
           <input
             type="text"
             value={broadcastTitle}
@@ -113,7 +121,7 @@ function Mypage() {
           />
         </div>
         <div className="form-group">
-          <label>Stream KEY</label>
+          <label><h2>Stream KEY</h2></label>
           <input
             disabled
             type="text"
@@ -122,18 +130,13 @@ function Mypage() {
           />
         </div>
         <div className="form-group">
-          <label>Stream URL</label>
+          <label><h2>Stream URL</h2></label>
           <input
             disabled
             type="text"
             value={streamUrl}
             onChange={handleBroadcastTitleChange}
           />
-        </div>
-        <div className="form-group">
-          <label>프로필 사진</label>
-          <img width={'30%'} height={'30%'} src={imageSrc}></img>
-          <input type="file" onChange={handleFileChange} />
         </div>
         <button type="submit" onClick={handleUpload}>
           저장

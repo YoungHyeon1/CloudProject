@@ -64,7 +64,7 @@ const Login = () => {
         />
       </div>
       <div className="input-group">
-        <label htmlFor="password">Password</label>
+        <label htmlFor="password">비밀번호</label>
         <input
           id="password"
           type="password"

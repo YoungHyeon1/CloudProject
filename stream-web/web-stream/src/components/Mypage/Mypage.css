@@ -1,13 +1,19 @@
 /* MyProfile.css */
+body {
+    background-color: #131313;
+    color: white;
+}
+
 .profile-container {
     max-width: 600px;
     padding: 20px;
     border-radius: 8px;
 }
 
-.profile-container h2 {
-    color: #9147ff; /* Twitch 메인 컬러 */
-    text-align: center;
+.profile-container h1 {
+    color: #c5a5ff; /* Twitch 메인 컬러 */
+    padding: 10px;
+    margin-top: -10px;
 }
 
 .form-group {
@@ -33,7 +39,7 @@
 
 button {
     display: block;
-    width: 100%;
+    width: 0 1em;
     padding: 10px;
     background-color: #9147ff;
     color: white;

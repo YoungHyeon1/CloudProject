@@ -1,7 +1,10 @@
+
 .aside {
     /* 사이드바 스타일링 */
-    border-right: 1px solid #ccc;
+    border-right: 1px solid #353535;
+    background-color: #1f1f1f;
     padding: 20px;
+    margin-bottom: -70px;
   }
   
   .users-list {
@@ -14,15 +17,35 @@
   }
   
   .aside li {
-    margin-bottom: 10px;
+    margin-bottom: 20px;
   }
   
   .aside a {
     text-decoration: none;
-    color: #333;
+    color: #dddddd;
+    font-size: 18px;
   }
   
   .aside a:hover {
-    color: blue;
+    color: white;
+  }
+
+  .recomm-chanel {
+    color: #ffffff;
+    font-size: 11px;
+    margin-top: -18px;
+    margin-left: -5px;
+  }
+
+  .prof-img {
+    border-radius: 50%;
+    overflow: hidden;
+    width: 40px;
+    height: 40px;
+    margin-bottom: -12px;
+  }
+
+  .prof-name {
+    margin: 12px;
   }
   

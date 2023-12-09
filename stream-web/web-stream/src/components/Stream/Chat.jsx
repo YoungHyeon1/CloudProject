@@ -567,7 +567,7 @@ const Chat = () => {
       username: '',
       userId: '',
       avatar: '',
-      message: `Connected to the chat room.`,
+      message: `채팅방에 오신 것을 환영합니다!`,
     };
     setMessages(prevState => {
       return [...prevState, status];
@@ -601,8 +601,8 @@ const Chat = () => {
                   type="text"
                   placeholder={
                     isChatConnected()
-                      ? 'Say something'
-                      : 'Waiting to connect...'
+                      ? '메시지 보내기'
+                      : '채팅 연결 중...'
                   }
                   value={message}
                   maxLength={500}
