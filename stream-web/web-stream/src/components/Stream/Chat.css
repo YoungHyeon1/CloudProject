@@ -214,11 +214,11 @@
 }
 
 .success-line {
-  padding: 6px 15px;
+  padding: 6px 13px;
   background: var(--color-bg-positive);
   border-radius: var(--input-height);
   display: flex;
-  margin-bottom: -20px;
+  margin-top: -10px;
 }
 
 .success-line p {
